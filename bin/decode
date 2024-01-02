@@ -1,0 +1,8 @@
+#!/bin/env ruby
+
+require 'rufus-lua'
+require_relative '../lib/lua'
+lua = Rufus::Lua::State.new(true)
+
+puts lua.eval(WA_DECODE.gsub(/WA_EXPORT_STRING/, ARGV[0]))
+exit(1)
