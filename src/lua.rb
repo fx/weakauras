@@ -1,6 +1,6 @@
 # see https://github.com/oratory/wago.io/blob/master/backend/api/helpers/encode-decode/WeakAura.js
 
-LUA_BASE_PATH = '/home/mr/.luarocks'.freeze
+LUA_BASE_PATH = './lua'.freeze
 
 LUA_BASE = <<-EOF
   -- set library paths

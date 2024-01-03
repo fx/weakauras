@@ -32,6 +32,23 @@ wget https://raw.githubusercontent.com/rossnichols/LibSerialize/master/LibSerial
 
 See `make.rb`
 
+### The WASI Way
+
+Grab [ruby.wasm](https://github.com/ruby/ruby.wasm), run `make`
+
+Run via `wasmtime`:
+
+```
+wasmtime weakauras.wasm \
+	--env BUNDLE_GEMFILE=/app/Gemfile \
+	--env BUNDLE_FROZEN=1 \
+	-- /app/src/make.rb --json
+```
+
+Only JSON for now, LUA for export packaging coming up next.
+
 ### To Do
 
-- [ ] [Make WASI](https://github.com/ruby/ruby.wasm), host on the interwebs!
+- [x] [Make WASI](https://github.com/ruby/ruby.wasm)
+- [ ] [Add LUA WASM](https://www.fermyon.com/wasm-languages/lua) for import/export (JSON decode/encode) support, instead of executing via ruby
+- [ ] Host browser executable on the interwebs
