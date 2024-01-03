@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'debug'
+require 'bundler'
+Bundler.require(:default)
 require 'digest/sha1'
 require 'erb'
-require 'json'
-require 'forwardable'
+require 'json/pure'
 require 'casting'
 require 'optparse'
 
@@ -17,11 +17,8 @@ end.parse!
 
 config = $stdin.read
 
-require_relative 'lib/weak_aura'
-require_relative 'lib/whack_aura'
-require_relative 'lib/lua'
-require 'rufus-lua'
-lua = Rufus::Lua::State.new(true)
+require_relative 'weak_aura'
+require_relative 'whack_aura'
 
 wa = WeakAura.new(type: WhackAura)
 wa.instance_eval config
@@ -29,6 +26,9 @@ wa.instance_eval config
 if options[:json]
   puts wa.export
 else
+  require_relative 'lua'
+  require 'rufus-lua'
+  lua = Rufus::Lua::State.new(true)
   json = JSON.generate(wa.export, quirks_mode: true)
   puts lua.eval(WA_ENCODE.gsub(/WA_EXPORT_JSON/, json))
 end
