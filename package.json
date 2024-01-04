@@ -1,0 +1,25 @@
+{
+  "name": "weakauras",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/lua/index.ts",
+  "scripts": {
+    "encode": "ts-node src/lua/encode.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fx/weakauras.git"
+  },
+  "author": "Marian Rudzynski <marian@rudzyn.ski>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fx/weakauras/issues"
+  },
+  "homepage": "https://github.com/fx/weakauras#readme",
+  "dependencies": {
+    "@types/node": "^20.10.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "wasmoon": "^1.16.0"
+  }
+}

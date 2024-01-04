@@ -20,13 +20,7 @@ end
 
 ### Install
 
-```
-sudo apt-get install ruby ruby-dev liblua5.1-0 libffi luarocks
-luarocks install --local libdeflate rxi-json
-
-# LibSerialize has no rockspec :(
-wget https://raw.githubusercontent.com/rossnichols/LibSerialize/master/LibSerialize.lua
-```
+Install your favorite ruby and node version. Check out [mise](https://mise.jdx.dev/)
 
 ### Run
 
@@ -47,8 +41,17 @@ wasmtime weakauras.wasm \
 
 Only JSON for now, LUA for export packaging coming up next.
 
+### Encoding WeakAuras2 Export String
+
+LUA WASM has lift-off, pipe the output straight in!
+
+```
+npm install
+echo '{"d": "test"}' | npm run encode
+```
+
 ### To Do
 
 - [x] [Make WASI](https://github.com/ruby/ruby.wasm)
-- [ ] [Add LUA WASM](https://www.fermyon.com/wasm-languages/lua) for import/export (JSON decode/encode) support, instead of executing via ruby
+- [x] [Add LUA WASM](https://www.fermyon.com/wasm-languages/lua) for import/export (JSON decode/encode) support, instead of executing via ruby
 - [ ] Host browser executable on the interwebs
