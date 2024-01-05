@@ -64,3 +64,33 @@ function encode(input)
   local encoded = "!WA:2!" .. LibDeflate:EncodeForPrint(compressed)
   return encoded
 end
+
+function decode(str)
+  local _, _, encodeVersion, encoded = str:find("^(!WA:%d+!)(.+)$")
+  if encodeVersion then
+    encodeVersion = tonumber(encodeVersion:match("%d+"))
+  else
+    encoded, encodeVersion = str:gsub("^%!", "")
+  end
+  if encodeVersion ~= 2 then
+    print('We only support WA2 encoding')
+    return ''
+  end
+
+  decoded = LibDeflate:DecodeForPrint(encoded)
+  print(decoded)
+  decompressed = LibDeflate:DecompressDeflate(decoded)
+
+  if not(decompressed) then
+    return ''
+  end
+
+  success, deserialized = LibSerialize:Deserialize(decompressed)
+  if not(success) then
+    print(decompressed)
+    print("Error deserializing: " .. encodeVersion .. deserialized)
+    return ''
+  end
+
+  return json.encode(deserialized)
+end
