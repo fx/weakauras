@@ -12,7 +12,6 @@ process.stdin.on("data", async (data) => {
       "dkjson.lua",
       "inspect.lua",
       "encode.lua",
-      "decode.lua",
     ].map((file) =>
       factory.mountFile(file, fs.readFileSync(`./src/lua/${file}`, "utf8"))
     )
