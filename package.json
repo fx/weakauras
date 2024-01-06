@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/fx/weakauras#readme",
   "dependencies": {
+    "@bjorn3/browser_wasi_shim": "^0.2.17",
+    "@ruby/wasm-wasi": "^2.4.1",
     "@types/node": "^20.10.6",
     "next": "^14.0.4",
     "react": "^18.2.0",

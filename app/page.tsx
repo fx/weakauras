@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { LuaEngine, LuaFactory } from "wasmoon";
+import { main as RubyBrowserInit } from "@ruby/wasm-wasi/dist/browser.script";
 
 import indexLua from "../src/lua/index.lua";
 import encodeLua from "../src/lua/encode.lua";
@@ -50,7 +51,16 @@ export default function Page() {
   }, [lua, weakaura]);
 
   useEffect(() => {
+    // Initialize Lua Engine
     init().then(setLua);
+
+    // Initialize Ruby Engine
+    RubyBrowserInit({
+      name: "@ruby/3.3-wasm-wasi",
+      version: "2.4.1",
+    }).then(() => {
+      rubyVM.eval("puts 'hello world!'");
+    });
   }, []);
 
   return (
