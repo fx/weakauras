@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { LuaEngine, LuaFactory } from "wasmoon";
+// @ts-ignore
 import { main as RubyBrowserInit } from "@ruby/wasm-wasi/dist/browser.script";
 
 import indexLua from "../src/lua/index.lua";
@@ -59,7 +60,8 @@ export default function Page() {
       name: "@ruby/3.3-wasm-wasi",
       version: "2.4.1",
     }).then(() => {
-      rubyVM.eval("puts 'hello world!'");
+      // @ts-ignore
+      rubyVM?.eval("puts 'hello world!'");
     });
   }, []);
 
