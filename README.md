@@ -51,9 +51,3 @@ LUA WASM has lift-off, pipe the output straight in!
 npm install
 echo '{"d": "test"}' | npm run encode
 ```
-
-### To Do
-
-- [x] [Make WASI](https://github.com/ruby/ruby.wasm)
-- [x] [Add LUA WASM](https://www.fermyon.com/wasm-languages/lua) for import/export (JSON decode/encode) support, instead of executing via ruby
-- [ ] Host browser executable on the interwebs
