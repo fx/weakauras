@@ -4,9 +4,15 @@ const nextConfig = {
   reactStrictMode: true,
   webpack: (config, context) => {
     config.module.rules.push({
-      test: /\.lua$/i,
+      test: /\.(lua)$/i,
       type: "asset/source",
     });
+
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    })
 
     config.watchOptions = {
       poll: 1000,

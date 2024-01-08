@@ -12,6 +12,12 @@ import inspectLua from "../src/lua/inspect.lua";
 import libDeflateLua from "../src/lua/LibDeflate.lua";
 import libSerializeLua from "../src/lua/LibSerialize.lua";
 
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Check, Loader2 } from "lucide-react";
+import { RubyVM } from "@ruby/wasm-wasi";
+
 async function init() {
   const factory = new LuaFactory();
   const lua = await factory.createEngine();
@@ -37,6 +43,7 @@ async function init() {
 
 export default function Page() {
   const [lua, setLua] = useState<LuaEngine>();
+  const [ruby, setRuby] = useState<RubyVM>();
   const [json, setJson] = useState<string>('{"d": "test"}');
   const [weakaura, setWeakaura] = useState<string>();
 
@@ -61,34 +68,66 @@ export default function Page() {
       version: "2.4.1",
     }).then(() => {
       // @ts-ignore
-      rubyVM?.eval("puts 'hello world!'");
+      setRuby(rubyVM);
     });
   }, []);
 
   return (
-    <>
-      <h1>Encode WeakAuras</h1>
-      {lua ? <p>Ready!</p> : <p>Loading...</p>}
-      <div style={{ display: "grid", grid: "auto-flow / 1fr 1fr" }}>
-        <div>
-          <textarea
-            placeholder="encode"
-            value={json}
-            onChange={(e) => setJson(e?.target.value)}
-            style={{ height: 200, width: "100%" }}
-          ></textarea>
-          <button onClick={encode}>encode</button>
+    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
+      <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-3xl">
+        WeakAuras
+      </h1>
+
+      <div>
+        <div className="font-bold text-xs py-2 px-4 rounded-full bg-gray-100 dark:bg-gray-800 inline-flex align-middle">
+          {lua ? (
+            <Check className="w-4 h-4 mr-1" />
+          ) : (
+            <Loader2 className="animate-spin w-4 h-4 mr-1" />
+          )}{" "}
+          LUA Engine
         </div>
-        <div>
-          <textarea
-            placeholder="decode"
-            value={weakaura}
-            onChange={(e) => setWeakaura(e?.target.value)}
-            style={{ height: 200, width: "100%" }}
-          ></textarea>
-          <button onClick={decode}>decode</button>
+
+        <div className="font-bold text-xs py-2 px-4 rounded-full bg-gray-100 dark:bg-gray-800 inline-flex align-middle">
+          {ruby ? (
+            <Check className="w-4 h-4 mr-1" />
+          ) : (
+            <Loader2 className="animate-spin w-4 h-4 mr-1" />
+          )}{" "}
+          Ruby Engine
         </div>
       </div>
-    </>
+
+      <div className="grid gap-4 w-full">
+        <div className="space-y-2">
+          <Label htmlFor="json">JSON</Label>
+          <Textarea
+            id="json"
+            className="h-32 dark:bg-gray-700 dark:text-gray-200"
+            placeholder="JSON goes here"
+            value={json}
+            onChange={(e) => setJson(e?.target.value)}
+          />
+        </div>
+        <div className="flex justify-center space-x-4">
+          <Button onClick={encode} className="w-1/2">
+            Encode
+          </Button>
+          <Button onClick={decode} className="w-1/2">
+            Decode
+          </Button>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="weakaura">WeakAura String</Label>
+          <Textarea
+            id="weakaura"
+            className="h-32 dark:bg-gray-700 dark:text-gray-200"
+            placeholder="WeakAura String goes here"
+            value={weakaura}
+            onChange={(e) => setWeakaura(e?.target.value)}
+          />
+        </div>
+      </div>
+    </section>
   );
 }

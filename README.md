@@ -1,5 +1,7 @@
 # WeakAuras Ruby DSL
 
+Check me out at [🔗 wa.fx.gd](https://wa.fx.gd/)
+
 Being old and not wanting all the clutter, I play all WoW classes using a "whack-a-mole" style weakaura that only shows buttons I actually can/should be pressing, as opposed to all buttons, with some emphasis or cooldown, as is typical for most player's UI.
 
 I didn't feel like copying/editing/changing these in the in-game UI anymore, so I created this proof of concept Ruby DSL approach to generating them.
