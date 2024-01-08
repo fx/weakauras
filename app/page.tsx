@@ -36,8 +36,6 @@ async function init() {
   );
 
   await lua.doString(indexLua);
-
-  console.log(luaAssets);
   return lua;
 }
 
@@ -54,7 +52,6 @@ export default function Page() {
 
   const decode = useCallback(() => {
     const _decode = lua.global.get("decode");
-    console.log(_decode(weakaura));
     setJson(_decode(weakaura));
   }, [lua, weakaura]);
 
