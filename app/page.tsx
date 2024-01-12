@@ -4,19 +4,22 @@ import { useCallback, useEffect, useState } from "react";
 import { LuaEngine, LuaFactory } from "wasmoon";
 // @ts-ignore
 import { main as RubyBrowserInit } from "@ruby/wasm-wasi/dist/browser.script";
+// @ts-ignore
+import { DefaultRubyVM } from "@ruby/wasm-wasi/dist/browser";
 
-import indexLua from "../src/lua/index.lua";
-import encodeLua from "../src/lua/encode.lua";
-import dkjsonLua from "../src/lua/dkjson.lua";
-import inspectLua from "../src/lua/inspect.lua";
-import libDeflateLua from "../src/lua/LibDeflate.lua";
-import libSerializeLua from "../src/lua/LibSerialize.lua";
+import indexLua from "../public/lua/index.lua";
+import encodeLua from "../public/lua/encode.lua";
+import dkjsonLua from "../public/lua/dkjson.lua";
+import inspectLua from "../public/lua/inspect.lua";
+import libDeflateLua from "../public/lua/LibDeflate.lua";
+import libSerializeLua from "../public/lua/LibSerialize.lua";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { RubyVM } from "@ruby/wasm-wasi";
+import { WeakAuraEditor } from "../components/WeakAuraEditor";
 
 async function init() {
   const factory = new LuaFactory();
@@ -39,6 +42,33 @@ async function init() {
   return lua;
 }
 
+const compileWebAssemblyModule = async function (response) {
+  if (!WebAssembly.compileStreaming) {
+    const buffer = await (await response).arrayBuffer();
+    return WebAssembly.compile(buffer);
+  } else {
+    return WebAssembly.compileStreaming(response);
+  }
+};
+
+const initRuby = async () => {
+  const options = {
+    name: "@ruby/3.3-wasm-wasi",
+    ruby_version: "3.3",
+    version: "2.4.1",
+    gemfile: "/app/Gemfile",
+    env: {
+      BUNDLE_PATH: "/app/vendor/bundle",
+      BUNDLE_GEMFILE: "/app/Gemfile",
+      BUNDLE_FROZEN: 1,
+    },
+  };
+
+  const response = fetch("/ruby.wasm");
+  const module = await compileWebAssemblyModule(response);
+  return await DefaultRubyVM(module, options);
+};
+
 export default function Page() {
   const [lua, setLua] = useState<LuaEngine>();
   const [ruby, setRuby] = useState<RubyVM>();
@@ -60,13 +90,13 @@ export default function Page() {
     init().then(setLua);
 
     // Initialize Ruby Engine
-    RubyBrowserInit({
-      name: "@ruby/3.3-wasm-wasi",
-      version: "2.4.1",
-    }).then(() => {
-      // @ts-ignore
-      setRuby(rubyVM);
-    });
+    initRuby()
+      .then((r) => {
+        setRuby(r?.vm);
+        // @ts-ignore
+        window.ruby = r;
+      })
+      .catch((e) => console.error(e));
   }, []);
 
   return (
@@ -93,6 +123,10 @@ export default function Page() {
           )}{" "}
           Ruby Engine
         </div>
+      </div>
+
+      <div>
+        <WeakAuraEditor ruby={ruby} onChange={(result) => setJson(result)} />
       </div>
 
       <div className="grid gap-4 w-full">

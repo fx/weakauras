@@ -20,6 +20,20 @@ dynamic_group 'WhackAuras' do
 end
 ```
 
+### Build
+
+```
+bundle exec rbwasm build -o public/ruby.wasm
+```
+
+`ruby_wasm` 2.5.1.pre.1 currently does not build for me, there is no other version on rubygems.org, so you'll have to build [ruby.wasm](https://github.com/ruby/ruby.wasm) @ 2.4.1
+
+
+```
+apt install libclang-dev
+rake build
+```
+
 ### Install
 
 Install your favorite ruby and node version. Check out [mise](https://mise.jdx.dev/)

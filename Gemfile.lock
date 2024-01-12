@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/ruby/ruby.wasm.git
+  revision: 0bab190cd87d533096ad98eefd3132b93fbe9068
+  specs:
+    ruby_wasm (2.4.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -7,13 +13,13 @@ GEM
     json (2.7.1)
     json_pure (2.7.1)
     language_server-protocol (3.17.0.3)
-    parallel (1.23.0)
-    parser (3.2.2.4)
+    parallel (1.24.0)
+    parser (3.3.0.2)
       ast (~> 2.4.1)
       racc
     racc (1.7.3)
     rainbow (3.1.1)
-    regexp_parser (2.8.3)
+    regexp_parser (2.9.0)
     rexml (3.2.6)
     rubocop (1.59.0)
       json (~> 2.3)
@@ -40,6 +46,7 @@ DEPENDENCIES
   deep_merge
   json_pure
   rubocop
+  ruby_wasm!
 
 BUNDLED WITH
    2.3.5
