@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { RubyVM } from "@ruby/wasm-wasi";
 import { WeakAuraEditor } from "../components/WeakAuraEditor";
+import { Editor } from "@monaco-editor/react";
 
 async function init() {
   const factory = new LuaFactory();
@@ -72,8 +73,13 @@ const initRuby = async () => {
 export default function Page() {
   const [lua, setLua] = useState<LuaEngine>();
   const [ruby, setRuby] = useState<RubyVM>();
-  const [json, setJson] = useState<string>('{"d": "test"}');
+  const [json, _setJson] = useState<string>('{"d": "test"}');
   const [weakaura, setWeakaura] = useState<string>();
+
+  const setJson = useCallback(
+    (json) => _setJson(JSON.stringify(JSON.parse(json), null, 2)),
+    []
+  );
 
   const encode = useCallback(() => {
     const _encode = lua.global.get("encode");
@@ -132,12 +138,13 @@ export default function Page() {
       <div className="grid gap-4 w-full">
         <div className="space-y-2">
           <Label htmlFor="json">JSON</Label>
-          <Textarea
-            id="json"
-            className="h-32 dark:bg-gray-700 dark:text-gray-200"
-            placeholder="JSON goes here"
+
+          <Editor
+            height="15rem"
+            defaultLanguage="json"
+            defaultValue=""
             value={json}
-            onChange={(e) => setJson(e?.target.value)}
+            onChange={setJson}
           />
         </div>
         <div className="flex justify-center space-x-4">

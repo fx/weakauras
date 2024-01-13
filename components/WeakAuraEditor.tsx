@@ -1,7 +1,7 @@
 import { RubyVM } from "@ruby/wasm-wasi";
-import { Textarea } from "./ui/textarea";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import Editor from "@monaco-editor/react";
 
 type WeakAuraEditorProps = {
   ruby: RubyVM;
@@ -10,12 +10,12 @@ type WeakAuraEditorProps = {
 
 export function WeakAuraEditor({ ruby, onChange }: WeakAuraEditorProps) {
   const defaultValue = `title 'Shadow Priest WhackAura'
-    load spec: :shadow_priest
-    hide_ooc!
+load spec: :shadow_priest
+hide_ooc!
 
-    dynamic_group 'WhackAuras' do
-      debuff_missing 'Shadow Word: Pain'
-    end`;
+dynamic_group 'WhackAuras' do
+  debuff_missing 'Shadow Word: Pain'
+end`;
   const [source, setSource] = useState<string>(defaultValue);
 
   useEffect(() => {
@@ -67,12 +67,12 @@ export function WeakAuraEditor({ ruby, onChange }: WeakAuraEditorProps) {
   return (
     <div className="grid gap-4 w-full">
       <div className="space-y-2">
-        <Textarea
-          id="source"
-          className="h-32 dark:bg-gray-700 dark:text-gray-200"
-          placeholder="Ruby goes here"
+        <Editor
+          height="15rem"
+          defaultLanguage="ruby"
+          defaultValue={defaultValue}
           value={source}
-          onChange={(e) => setSource(e?.target.value)}
+          onChange={setSource}
         />
       </div>
       <div className="flex justify-center space-x-4">
