@@ -1,7 +1,8 @@
 import { RubyVM } from "@ruby/wasm-wasi";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Editor from "@monaco-editor/react";
+import { GlobalContext } from "../app/layout";
 
 type WeakAuraEditorProps = {
   ruby: RubyVM;
@@ -9,17 +10,10 @@ type WeakAuraEditorProps = {
 };
 
 export function WeakAuraEditor({ ruby, onChange }: WeakAuraEditorProps) {
-  const defaultValue = `title 'Shadow Priest WhackAura'
-load spec: :shadow_priest
-hide_ooc!
-
-dynamic_group 'WhackAuras' do
-  debuff_missing 'Shadow Word: Pain'
-end`;
-  const [source, setSource] = useState<string>(defaultValue);
-
+  const { source, setSource } = useContext(GlobalContext);
   useEffect(() => {
     if (!ruby) return;
+
     const init = `
       require 'bundler'
       Bundler.require(:default)
@@ -60,7 +54,6 @@ end`;
 
     ruby?.evalAsync(_source).then((result) => {
       onChange?.(result.toString());
-      console.log(result.toString());
     });
   }, [source, ruby]);
 
@@ -70,7 +63,7 @@ end`;
         <Editor
           height="15rem"
           defaultLanguage="ruby"
-          defaultValue={defaultValue}
+          defaultValue=""
           value={source}
           onChange={setSource}
         />

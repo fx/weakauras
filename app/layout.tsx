@@ -1,9 +1,10 @@
-import React, { Suspense } from "react";
+"use client";
+
+import React, { Suspense, createContext, useState } from "react";
 import "./globals.css";
-import { cn } from "@/lib/utils";
 import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
 import { PHProvider, PostHogPageview } from "./providers";
+import { Header } from "@/components/header";
 
 if (typeof window !== "undefined") {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -11,22 +12,45 @@ if (typeof window !== "undefined") {
   });
 }
 
+type GlobalContextType = {
+  setSource: (source: string) => void;
+  source: string;
+};
+
+export const GlobalContext = createContext<GlobalContextType>({
+  source: "",
+  setSource: () => {},
+});
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [source, setSource] = useState<string>(
+    `title 'Shadow Priest WhackAura'
+load spec: :shadow_priest
+hide_ooc!
+
+dynamic_group 'WhackAuras' do
+  debuff_missing 'Shadow Word: Pain'
+end`
+  );
+
   return (
     <html lang="en">
       <Suspense>
         <PostHogPageview />
       </Suspense>
       <PHProvider>
-        <body
-          className={cn("min-h-screen bg-background font-sans antialiased")}
-        >
-          <div className="flex-1">{children}</div>
-        </body>
+        <GlobalContext.Provider value={{ source, setSource }}>
+          <body className={"min-h-screen bg-background font-sans antialiased"}>
+            <Header />
+            <section className="container grid flex-1 items-center gap-6">
+              {children}
+            </section>
+          </body>
+        </GlobalContext.Provider>
       </PHProvider>
     </html>
   );

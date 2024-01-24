@@ -19,8 +19,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { RubyVM } from "@ruby/wasm-wasi";
-import { WeakAuraEditor } from "../components/WeakAuraEditor";
 import { Editor } from "@monaco-editor/react";
+import { WeakAuraEditor } from "@/components/weak-aura-editor";
 
 async function init() {
   const factory = new LuaFactory();
@@ -106,11 +106,7 @@ export default function Page() {
   }, []);
 
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-3xl">
-        WeakAuras
-      </h1>
-
+    <>
       <div>
         <div className="font-bold text-xs py-2 px-4 rounded-full bg-gray-100 dark:bg-gray-800 inline-flex align-middle">
           {lua ? (
@@ -166,6 +162,6 @@ export default function Page() {
           />
         </div>
       </div>
-    </section>
+    </>
   );
 }
