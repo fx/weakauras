@@ -1,8 +1,8 @@
 import { RubyVM } from "@ruby/wasm-wasi";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { Button } from "./ui/button";
 import Editor from "@monaco-editor/react";
-import { GlobalContext } from "../app/layout";
+import { GlobalContext } from "../app/providers";
 
 type WeakAuraEditorProps = {
   ruby: RubyVM;

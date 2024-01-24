@@ -3,7 +3,7 @@
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { createContext, useEffect } from "react";
 
 if (typeof window !== "undefined") {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -34,3 +34,13 @@ export function PostHogPageview(): JSX.Element {
 export function PHProvider({ children }: { children: React.ReactNode }) {
   return <PostHogProvider client={posthog}>{children}</PostHogProvider>;
 }
+
+type GlobalContextType = {
+  setSource: (source: string) => void;
+  source: string;
+};
+
+export const GlobalContext = createContext<GlobalContextType>({
+  source: "",
+  setSource: () => {},
+});

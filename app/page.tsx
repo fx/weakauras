@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { LuaEngine, LuaFactory } from "wasmoon";
 // @ts-ignore
-import { main as RubyBrowserInit } from "@ruby/wasm-wasi/dist/browser.script";
-// @ts-ignore
 import { DefaultRubyVM } from "@ruby/wasm-wasi/dist/browser";
 
 import indexLua from "../public/lua/index.lua";
