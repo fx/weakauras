@@ -1,9 +1,11 @@
-import React, { Suspense } from "react";
+"use client";
+
+import React, { Suspense, useEffect, useState } from "react";
 import "./globals.css";
-import { cn } from "@/lib/utils";
 import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
-import { PHProvider, PostHogPageview } from "./providers";
+import { GlobalContext, PHProvider, PostHogPageview } from "./providers";
+import { Header } from "@/components/header";
+import { encode, decode } from "@/lib/utils";
 
 if (typeof window !== "undefined") {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
@@ -16,17 +18,49 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const hash = typeof window !== "undefined" ? window.location.hash : "";
+  const [source, setSource] = useState<string>(
+    hash
+      ? decode(hash)
+      : `title 'Shadow Priest WhackAura'
+load spec: :shadow_priest
+hide_ooc!
+
+dynamic_group 'WhackAuras' do
+  debuff_missing 'Shadow Word: Pain'
+end`
+  );
+
+  useEffect(() => {
+    const base64 = encode(source);
+    if (window?.location) window.location.hash = base64;
+    history.pushState(null, "", `#${base64}`);
+  }, [source]);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setSource(decode(window?.location?.hash));
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
+
   return (
     <html lang="en">
       <Suspense>
         <PostHogPageview />
       </Suspense>
       <PHProvider>
-        <body
-          className={cn("min-h-screen bg-background font-sans antialiased")}
-        >
-          <div className="flex-1">{children}</div>
-        </body>
+        <GlobalContext.Provider value={{ source, setSource }}>
+          <body className={"min-h-screen bg-background font-sans antialiased"}>
+            <Header />
+            <section className="container grid flex-1 items-center gap-6">
+              {children}
+            </section>
+          </body>
+        </GlobalContext.Provider>
       </PHProvider>
     </html>
   );
