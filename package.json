@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
+    "test:coverage": "vitest run --coverage",
     "encode": "ts-node src/lua/encode.ts"
   },
   "repository": {
