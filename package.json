@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest",
     "encode": "ts-node src/lua/encode.ts"
   },
   "repository": {
@@ -44,6 +45,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "usehooks-ts": "^2.9.5",
+    "vitest": "^1.2.1",
     "wasmoon": "^1.16.0"
   },
   "devDependencies": {

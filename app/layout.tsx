@@ -5,25 +5,13 @@ import "./globals.css";
 import posthog from "posthog-js";
 import { GlobalContext, PHProvider, PostHogPageview } from "./providers";
 import { Header } from "@/components/header";
-import pako from "pako";
+import { encode, decode } from "@/lib/utils";
 
 if (typeof window !== "undefined") {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   });
 }
-
-const encode = (source: string) => {
-  const input = new TextEncoder().encode(source);
-  const output = pako.deflate(input);
-  return Buffer.from(output).toString("base64");
-};
-
-const decode = (hash: string) => {
-  const input = Buffer.from(hash, "base64");
-  const output = pako.inflate(input);
-  return new TextDecoder().decode(output);
-};
 
 export default function RootLayout({
   children,
