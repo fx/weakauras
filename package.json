@@ -10,7 +10,7 @@
     "lint": "next lint",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "encode": "ts-node src/lua/encode.ts"
+    "encode": "ts-node public/lua/encode.ts"
   },
   "repository": {
     "type": "git",

@@ -5,10 +5,10 @@ module WhackAura # rubocop:disable Style/Documentation
     aura_missing(name, requires: requires, remaining_time: remaining_time)
   end
 
-  def auras(names, requires: { auras: [], events: [] }, remaining_time: nil, show_on: :missing, type: 'buff', unit: 'player', &block) # rubocop:disable Metrics/ParameterLists,Layout/LineLength
+  def auras(names, requires: { auras: [], events: [] }, remaining_time: nil, show_on: :missing, type: 'buff', unit: 'player', stacks: nil, &block) # rubocop:disable Metrics/ParameterLists,Layout/LineLength
     names = [names] unless names.is_a?(Array)
     triggers = make_triggers(requires, [],
-                             [Trigger::Auras.new(aura_names: names, remaining_time: remaining_time, show_on: show_on, type: type, unit: unit)]) # rubocop:disable Layout/LineLength
+                             [Trigger::Auras.new(aura_names: names, remaining_time: remaining_time, show_on: show_on, type: type, unit: unit, stacks: stacks)]) # rubocop:disable Layout/LineLength
     triggers = triggers.merge({
                                 disjunctive: 'all',
                                 activeTriggerMode: -10
@@ -34,8 +34,19 @@ module WhackAura # rubocop:disable Style/Documentation
     auras(*args, **kwargs, &block)
   end
 
-  def action_usable(name, requires: { auras: [], events: [] }, if_missing: [], on_show: {}, &block) # rubocop:disable Metrics/MethodLength
-    triggers = make_triggers(requires, if_missing, [Trigger::ActionUsable.new(spell: name)])
+  # rubocop:disable Metrics/MethodLength
+  def action_usable(
+    name, requires: {
+      target_debuffs_missing: [],
+      auras: [],
+      events: []
+    },
+    if_missing: [],
+    if_stacks: {},
+    on_show: {},
+    &block
+  )
+    triggers = make_triggers(requires, if_missing, if_stacks, [Trigger::ActionUsable.new(spell: name)])
     triggers = triggers.merge({
                                 activeTriggerMode: -10
                               })
@@ -56,8 +67,9 @@ module WhackAura # rubocop:disable Style/Documentation
 
     end
 
-    node = WeakAura::Icon.new(id: name, parent: self, triggers: triggers, actions: actions)
-    block.call(triggers, node) if block_given?
+    node = WeakAura::Icon.new(id: name, parent: self, triggers: triggers, actions: actions, &block)
+    # block.call(triggers, node) if block_given?
     add_node(node)
   end
+  # rubocop:enable Metrics/MethodLength
 end

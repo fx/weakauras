@@ -65,3 +65,10 @@ LUA WASM has lift-off, pipe the output straight in!
 npm install
 echo '{"d": "test"}' | npm run encode
 ```
+
+### WTF?
+
+- Q: Decode fails to deserialize, wtf? 
+
+  The UTF-8 leading byte error is probably a red herring.
+  Also, it just randomly starts working again with no significant changes, so ..I guess just keep rebuilding/reloading until it works!

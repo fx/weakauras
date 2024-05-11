@@ -86,12 +86,16 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   alias name id
   alias title id
 
-  def make_triggers(requires, if_missing = [], triggers = []) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+  def make_triggers(requires, if_missing = [], if_stacks = {}, triggers = []) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
     # When passing an array, assume it's auras.
     requires = { auras: requires } if requires.is_a?(Array)
 
     requires[:auras]&.each do |required|
       triggers << Trigger::Auras.new(aura_names: required, show_on: :active)
+    end
+
+    requires[:target_debuffs_missing]&.each do |required|
+      triggers << Trigger::Auras.new(aura_names: required, show_on: :missing, unit: 'target', type: 'debuff')
     end
 
     requires[:cooldowns]&.each do |required|
@@ -103,6 +107,12 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     if if_missing.any?
       if_missing.each do |missing|
         triggers << Trigger::Auras.new(aura_names: missing, show_on: :missing)
+      end
+    end
+
+    if if_stacks.any?
+      if_stacks.each do |name, stacks|
+        triggers << Trigger::Auras.new(aura_names: name, stacks: stacks, show_on: :active)
       end
     end
 
@@ -167,14 +177,30 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     node
   end
 
-  def glow! # rubocop:disable Metrics/MethodLength
-    @conditions ||= {}
-    @conditions << {
-      check: {
+  def glow!(options = {}) # rubocop:disable Metrics/MethodLength
+    raise 'glow! only supports a single check, use multiple `glow!` calls for multiple checks.' if options.keys.size > 1
+
+    check = []
+    if options.empty?
+      check = {
         trigger: 1,
         variable: 'show',
         value: 1
-      },
+      }
+    end
+
+    if options[:charges]
+      check = {
+        "variable": 'charges',
+        "op": '==',
+        "value": options[:charges].to_s,
+        "trigger": 1
+      }
+    end
+
+    @conditions ||= {}
+    @conditions << {
+      check: check,
       changes: [
         {
           value: true,
