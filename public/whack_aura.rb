@@ -36,7 +36,7 @@ module WhackAura # rubocop:disable Style/Documentation
 
   # rubocop:disable Metrics/MethodLength
   def action_usable(
-    name, requires: {
+    names, requires: {
       target_debuffs_missing: [],
       auras: [],
       events: []
@@ -46,10 +46,16 @@ module WhackAura # rubocop:disable Style/Documentation
     on_show: {},
     &block
   )
-    triggers = make_triggers(requires, if_missing, if_stacks, [Trigger::ActionUsable.new(spell: name)])
-    triggers = triggers.merge({
-                                activeTriggerMode: -10
-                              })
+    names = [names] unless names.is_a?(Array)
+
+    triggers = make_triggers(
+      requires,
+      if_missing,
+      if_stacks,
+      names.map do |name|
+        Trigger::ActionUsable.new(spell: name)
+      end
+    ).merge({ disjunctive: names.size > 1 ? 'any' : 'all', activeTriggerMode: -10 })
 
     if on_show[:event]
       actions =
