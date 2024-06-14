@@ -85,6 +85,7 @@ export default function Page() {
   }, [lua, json]);
 
   const decode = useCallback(() => {
+    if (!weakaura) return;
     const _decode = lua.global.get("decode");
     setJson(_decode(weakaura));
   }, [lua, weakaura]);

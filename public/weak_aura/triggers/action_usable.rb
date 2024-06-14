@@ -24,7 +24,6 @@ module Trigger
           unit: 'player',
           use_track: true,
           debuffType: 'HELPFUL'
-
         }
       }
     end
