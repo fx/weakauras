@@ -7,12 +7,12 @@ module Trigger
     def initialize(**options)
       super
 
-      @options = { type: 'buff', unit: 'player', remaining_time: nil, show_on: :missing }.merge(@options)
+      @options = { type: 'buff', unit: 'player', remaining_time: nil, show_on: :missing }.merge(options)
       @options[:show_on] = :active if @options[:remaining_time]&.positive?
 
-      raise 'aura_names is required' unless options[:aura_names]
+      raise 'aura_names is required' unless @options[:aura_names]
 
-      @options[:aura_names] = [@options[:aura_names]] unless options[:aura_names].is_a?(Array)
+      @options[:aura_names] = [@options[:aura_names]] unless @options[:aura_names].is_a?(Array)
     end
 
     def as_json # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/AbcSize

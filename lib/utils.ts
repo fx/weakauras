@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import pako from "pako";
+import { base64URLToBytes, bytesToBase64URL } from "./base64";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,11 +10,16 @@ export function cn(...inputs: ClassValue[]) {
 export const encode = (source: string) => {
   const input = new TextEncoder().encode(source);
   const output = pako.deflate(input);
-  return Buffer.from(output).toString("base64");
+  return bytesToBase64URL(output);
 };
 
 export const decode = (hash: string) => {
-  const input = Buffer.from(hash, "base64");
-  const output = pako.inflate(input);
-  return new TextDecoder().decode(output);
+  try {
+    const input = base64URLToBytes(hash.replace(/^#/, ""));
+    const output = pako.inflate(input);
+    return new TextDecoder().decode(output);
+  } catch (e) {
+    console.log("Failed to decode hash: ", e, hash);
+    return undefined;
+  }
 };

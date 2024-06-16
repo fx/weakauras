@@ -9,8 +9,6 @@ module Trigger
         event: 'Action Usable',
         spell_name: options[:spell]
       }.merge(options)
-
-      @options = options
     end
   end
 end

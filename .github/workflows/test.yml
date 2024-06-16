@@ -18,6 +18,7 @@ jobs:
           node-version: 18
       - run: |
           npm install
+          npx playwright install
           npm run test:coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

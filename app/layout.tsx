@@ -20,9 +20,7 @@ export default function RootLayout({
 }) {
   const hash = typeof window !== "undefined" ? window.location.hash : "";
   const [source, setSource] = useState<string>(
-    hash
-      ? decode(hash)
-      : `title 'Shadow Priest WhackAura'
+    `title 'Shadow Priest WhackAura'
 load spec: :shadow_priest
 hide_ooc!
 
@@ -32,6 +30,7 @@ end`
   );
 
   useEffect(() => {
+    if (!source || source === "") return;
     const base64 = encode(source);
     if (window?.location) window.location.hash = base64;
     history.pushState(null, "", `#${base64}`);
@@ -39,6 +38,7 @@ end`
 
   useEffect(() => {
     const handleHashChange = () => {
+      if (!window?.location?.hash) return;
       setSource(decode(window?.location?.hash));
     };
     window.addEventListener("hashchange", handleHashChange);

@@ -86,7 +86,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   alias name id
   alias title id
 
-  def make_triggers(requires, if_missing = [], if_stacks = {}, triggers = []) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+  def make_triggers(requires, if_missing: [], if_stacks: {}, triggers: []) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
     # When passing an array, assume it's auras.
     requires = { auras: requires } if requires.is_a?(Array)
 
@@ -145,7 +145,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
 
   def group(name, **kwargs, &block) # rubocop:disable Metrics/MethodLength
     if requires = kwargs.delete(:requires) # rubocop:disable Lint/AssignmentInCondition
-      triggers = make_triggers(requires, [])
+      triggers = make_triggers(requires)
       triggers = triggers.merge({
                                   disjunctive: 'all',
                                   activeTriggerMode: -10
