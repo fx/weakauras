@@ -33,7 +33,6 @@
     "@svgr/webpack": "^8.1.0",
     "@types/node": "^20.10.6",
     "@types/pako": "^2.0.3",
-    "@vitest/coverage-v8": "^1.2.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.307.0",
@@ -53,6 +52,7 @@
   "devDependencies": {
     "@types/react": "18.2.46",
     "@vitest/browser": "^1.6.0",
+    "@vitest/coverage-istanbul": "^1.6.0",
     "autoprefixer": "^10.4.16",
     "playwright": "^1.44.1",
     "postcss": "^8.4.33",
