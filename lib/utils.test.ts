@@ -3,7 +3,7 @@ import { decode, encode } from "./utils";
 
 describe("utils", () => {
   describe("decode", () => {
-    const encoded = "eJxzy89XSMxLUXBKLNJRSMzJUUgsUSjJSFUoTsxNVSjJzE1VBADCFAs+";
+    const encoded = "eJxzy89XSMxLUXBKLNJRSMzJUUgsUSjJSFUoTsxNVSjJzE1VBADCFAs-";
     const decoded = "Foo and Bar, all at the same time!";
 
     it("should encode", () => expect(encode(decoded)).toEqual(encoded));
