@@ -9,11 +9,11 @@ export function cn(...inputs: ClassValue[]) {
 export const encode = (source: string) => {
   const input = new TextEncoder().encode(source);
   const output = pako.deflate(input);
-  return Buffer.from(output).toString("base64");
+  return btoa(String.fromCharCode(...output));
 };
 
 export const decode = (hash: string) => {
-  const input = Buffer.from(hash, "base64");
+  const input = Uint8Array.from(atob(hash), (c) => c.charCodeAt(0));
   const output = pako.inflate(input);
   return new TextDecoder().decode(output);
 };
