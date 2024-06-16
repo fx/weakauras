@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { LuaEngine, LuaFactory } from "wasmoon";
-// @ts-ignore
 import { DefaultRubyVM } from "@ruby/wasm-wasi/dist/browser";
 
 import indexLua from "../public/lua/index.lua";
@@ -19,6 +18,7 @@ import { Check, Loader2 } from "lucide-react";
 import { RubyVM } from "@ruby/wasm-wasi";
 import { Editor } from "@monaco-editor/react";
 import { WeakAuraEditor } from "@/components/weak-aura-editor";
+import { initRuby } from "@/lib/compiler";
 
 async function init() {
   const factory = new LuaFactory();
@@ -40,33 +40,6 @@ async function init() {
   await lua.doString(indexLua);
   return lua;
 }
-
-const compileWebAssemblyModule = async function (response) {
-  if (!WebAssembly.compileStreaming) {
-    const buffer = await (await response).arrayBuffer();
-    return WebAssembly.compile(buffer);
-  } else {
-    return WebAssembly.compileStreaming(response);
-  }
-};
-
-const initRuby = async () => {
-  const options = {
-    name: "@ruby/3.3-wasm-wasi",
-    ruby_version: "3.3",
-    version: "2.4.1",
-    gemfile: "/app/Gemfile",
-    env: {
-      BUNDLE_PATH: "/app/vendor/bundle",
-      BUNDLE_GEMFILE: "/app/Gemfile",
-      BUNDLE_FROZEN: 1,
-    },
-  };
-
-  const response = fetch("/ruby.wasm");
-  const module = await compileWebAssemblyModule(response);
-  return await DefaultRubyVM(module, options);
-};
 
 export default function Page() {
   const [lua, setLua] = useState<LuaEngine>();
