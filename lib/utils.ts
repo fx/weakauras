@@ -14,7 +14,12 @@ export const encode = (source: string) => {
 };
 
 export const decode = (hash: string) => {
-  const input = base64URLToBytes(hash);
-  const output = pako.inflate(input);
-  return new TextDecoder().decode(output);
+  try {
+    const input = base64URLToBytes(hash.replace(/^#/, ""));
+    const output = pako.inflate(input);
+    return new TextDecoder().decode(output);
+  } catch (e) {
+    console.log("Failed to decode hash: ", e, hash);
+    return undefined;
+  }
 };
