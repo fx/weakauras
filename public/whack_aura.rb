@@ -34,9 +34,9 @@ module WhackAura # rubocop:disable Style/Documentation
     auras(*args, **kwargs, &block)
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable all
   def action_usable(
-    names, requires: {
+    spells, requires: {
       target_debuffs_missing: [],
       auras: [],
       events: []
@@ -44,18 +44,30 @@ module WhackAura # rubocop:disable Style/Documentation
     if_missing: [],
     if_stacks: {},
     on_show: {},
+    title: nil,
     &block
   )
-    names = [names] unless names.is_a?(Array)
+    spells = [spells] unless spells.is_a?(Array)
+    if title.nil?
+      title = spells.map do |spell|
+        if spell.is_a?(String)
+          spell
+        else
+          spell[:spell_name] || spell[:spell]
+        end
+      end.join(' + ')
+    end
+    triggers = spells.to_a.map do |kwargs|
+      kwargs = { spell: kwargs } if kwargs.is_a?(String)
+      Trigger::ActionUsable.new(**kwargs)
+    end
 
     triggers = make_triggers(
       requires,
       if_missing: if_missing,
       if_stacks: if_stacks,
-      triggers: names.map do |name|
-        Trigger::ActionUsable.new(spell: name)
-      end
-    ).merge({ disjunctive: names.size > 1 ? 'any' : 'all', activeTriggerMode: -10 })
+      triggers: triggers
+    ).merge({ disjunctive: spells.size > 1 ? 'any' : 'all', activeTriggerMode: -10 })
 
     if on_show[:event]
       actions =
@@ -73,9 +85,8 @@ module WhackAura # rubocop:disable Style/Documentation
 
     end
 
-    node = WeakAura::Icon.new(id: name, parent: self, triggers: triggers, actions: actions, &block)
-    # block.call(triggers, node) if block_given?
+    node = WeakAura::Icon.new(id: title, parent: self, triggers: triggers, actions: actions, &block)
     add_node(node)
   end
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable
 end
