@@ -77,7 +77,7 @@ export const initRuby = async (
 export const compile = async (ruby: RubyVM, source: string) => {
   const _source = `
       wa = WeakAura.new(type: WhackAura)
-      wa.instance_eval "${source}"
+      wa.instance_eval %Q[${source}]
       wa.export
     `;
 

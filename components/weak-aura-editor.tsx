@@ -1,4 +1,4 @@
-import { rubyInit } from "@/lib/compiler";
+import { compile, rubyInit } from "@/lib/compiler";
 import Editor from "@monaco-editor/react";
 import { RubyVM } from "@ruby/wasm-wasi";
 import { useCallback, useContext, useEffect } from "react";
@@ -17,15 +17,9 @@ export function WeakAuraEditor({ ruby, onChange }: WeakAuraEditorProps) {
     ruby?.evalAsync(rubyInit);
   }, [ruby]);
 
-  const compile = useCallback(() => {
+  const handleCompile = useCallback(() => {
     if (!ruby) return;
-    const _source = `
-      wa = WeakAura.new(type: WhackAura)
-      wa.instance_eval "${source}"
-      wa.export
-    `;
-
-    ruby?.evalAsync(_source).then((result) => {
+    compile(ruby, source).then((result) => {
       onChange?.(result.toString());
     });
   }, [source, ruby]);
@@ -42,7 +36,7 @@ export function WeakAuraEditor({ ruby, onChange }: WeakAuraEditorProps) {
         />
       </div>
       <div className="flex justify-center space-x-4">
-        <Button onClick={compile} className="w-full">
+        <Button onClick={handleCompile} className="w-full">
           Compile
         </Button>
       </div>
