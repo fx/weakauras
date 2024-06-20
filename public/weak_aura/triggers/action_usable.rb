@@ -4,6 +4,9 @@ module Trigger
   class ActionUsable < Base # rubocop:disable Style/Documentation
     def initialize(**_options)
       super
+      @options = {
+        exact: false
+      }.merge(@options)
       @options[:spell_name] = @options[:spell] if @options[:spell_name].nil?
     end
 
@@ -13,6 +16,7 @@ module Trigger
           type: 'spell',
           subeventSuffix: '_CAST_START',
           spellName: options[:spell],
+          use_exact_spellName: !!options[:exact],
           use_genericShowOn: true,
           event: 'Action Usable',
           names: [],
