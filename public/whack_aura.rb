@@ -34,7 +34,7 @@ module WhackAura # rubocop:disable Style/Documentation
     auras(*args, **kwargs, &block)
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable all
   def action_usable(
     spells, requires: {
       target_debuffs_missing: [],
@@ -44,9 +44,19 @@ module WhackAura # rubocop:disable Style/Documentation
     if_missing: [],
     if_stacks: {},
     on_show: {},
+    title: nil,
     &block
   )
     spells = [spells] unless spells.is_a?(Array)
+    if title.nil?
+      title = spells.map do |spell|
+        if spell.is_a?(String)
+          spell
+        else
+          spell[:spell_name] || spell[:spell]
+        end
+      end.join(' + ')
+    end
     triggers = spells.to_a.map do |kwargs|
       kwargs = { spell: kwargs } if kwargs.is_a?(String)
       Trigger::ActionUsable.new(**kwargs)
@@ -75,9 +85,8 @@ module WhackAura # rubocop:disable Style/Documentation
 
     end
 
-    node = WeakAura::Icon.new(id: name, parent: self, triggers: triggers, actions: actions, &block)
-    # block.call(triggers, node) if block_given?
+    node = WeakAura::Icon.new(id: title, parent: self, triggers: triggers, actions: actions, &block)
     add_node(node)
   end
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable
 end
