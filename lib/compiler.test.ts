@@ -9,6 +9,12 @@ declare module "vitest" {
   }
 }
 
+const parse = async (vm: RubyVM, code: string) => {
+  const response = await compile(vm, code);
+  const result = response.toString();
+  return JSON.parse(result);
+};
+
 describe("compiler", () => {
   beforeEach(async (context) => {
     const { vm } = await initRuby({ root_uri: "/public/" });
@@ -17,10 +23,20 @@ describe("compiler", () => {
   });
 
   it("returns valid JSON", async ({ vm }) => {
-    const response = await compile(vm, "");
-    const result = response.toString();
-    const json = JSON.parse(result);
-    expect(json).toBeTypeOf("object");
+    expect(await parse(vm, "")).toBeTypeOf("object");
+  });
+
+  it("can deal with single quotes in strings", async ({ vm }) => {
+    expect(
+      await parse(
+        vm,
+        `
+          dynamic_group "Test'er" do
+            action_usable "Test'er'spell"
+          end
+        `
+      )
+    ).toBeTypeOf("object");
   });
 
   describe("debuff_missing", () => {
