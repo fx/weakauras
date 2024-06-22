@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-require 'casting'
-require 'digest/sha1'
-require 'erb'
-require 'json/pure'
-require 'optparse'
-require_relative '../weak_aura'
-require_relative '../whack_aura'
+require './spec/spec_helper'
 
 RSpec.describe WeakAura::DynamicGroup do
   it 'has sane defaults' do

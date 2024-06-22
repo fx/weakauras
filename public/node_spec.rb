@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-require 'casting'
-require 'digest/sha1'
-require 'erb'
-require 'json/pure'
-require 'optparse'
-require_relative 'node'
+require './spec/spec_helper'
 
 RSpec.describe Node do
   describe 'option' do
