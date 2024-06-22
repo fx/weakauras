@@ -13,13 +13,12 @@ import inspectLua from "../public/lua/inspect.lua";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { WeakAuraEditor } from "@/components/weak-aura-editor";
+import { WeakAuraEditor, defaultSource } from "@/components/weak-aura-editor";
 import { initRuby } from "@/lib/compiler";
 import { Editor } from "@monaco-editor/react";
 import { RubyVM } from "@ruby/wasm-wasi";
 import { Check, Loader2 } from "lucide-react";
 import { GlobalContext } from "./providers";
-import { decodeHash, encodeHash } from "@/lib/utils";
 
 async function init() {
   const factory = new LuaFactory();
@@ -42,29 +41,12 @@ async function init() {
   return lua;
 }
 
-export const defaultSource = `title 'Shadow Priest WhackAura'
-load spec: :shadow_priest
-hide_ooc!
-
-dynamic_group 'WhackAuras' do
-  debuff_missing 'Shadow Word: Pain'
-end`;
-
-export default function Page({ children }) {
+export default function Page() {
   const [lua, setLua] = useState<LuaEngine>();
   const [ruby, setRuby] = useState<RubyVM>();
   const [json, _setJson] = useState<string>('{"d": "test"}');
   const [weakaura, setWeakaura] = useState<string>();
   const [source, setSource] = useState<string>(defaultSource);
-
-  useEffect(() => {
-    if (!source || source === "" || source === defaultSource) return;
-    const base64 = encodeHash(source);
-    if (window?.location) window.location.hash = base64;
-    history.pushState(null, "", `#${base64}`);
-  }, [source]);
-
-  useEffect(() => {}, []);
 
   const setJson = useCallback(
     (json: string) => _setJson(JSON.stringify(JSON.parse(json), null, 2)),
@@ -94,16 +76,6 @@ export default function Page({ children }) {
         window.ruby = r;
       })
       .catch((e) => console.error(e));
-
-    const handleHashChange = () => {
-      if (!window?.location?.hash) return;
-      setSource(decodeHash(window?.location?.hash));
-    };
-    window.addEventListener("hashchange", handleHashChange);
-    if (window?.location?.hash) handleHashChange();
-    return () => {
-      window.removeEventListener("hashchange", handleHashChange);
-    };
   }, []);
 
   return (
@@ -163,8 +135,6 @@ export default function Page({ children }) {
           />
         </div>
       </div>
-
-      {children}
     </GlobalContext.Provider>
   );
 }

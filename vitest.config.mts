@@ -9,6 +9,7 @@ export default defineConfig({
     alias: [{ find: "@", replacement: resolve(__dirname) }],
   },
   test: {
+    setupFiles: ["./vitest.setup.tsx"],
     environment: "jsdom",
     exclude: [...configDefaults.exclude, "vendor"],
     coverage: {
