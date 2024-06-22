@@ -7,12 +7,11 @@ on:
       - main
 
 jobs:
-  test:
+  e2e:
     if: github.event.pull_request.draft == false
-    name: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -24,3 +23,28 @@ jobs:
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          fail_ci_if_error: true
+  rspec:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby:
+          - "3.2"
+    name: rspec ${{ matrix.ruby }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run RSpec
+        run: bundle exec rspec public/
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          file: ./coverage/.resultset.json
+          fail_ci_if_error: true

@@ -76,6 +76,25 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     instance_eval(&block)
   end
 
+  class << self
+    attr_accessor :options
+
+    def option(name, default: nil)
+      @options ||= {}
+      options[name] ||= default
+
+      define_method(name) do |value = nil|
+        return options[name] unless value
+
+        options[name] = value
+      end
+    end
+  end
+
+  def options
+    self.class.options
+  end
+
   def id(value = nil)
     return @id unless value
 
