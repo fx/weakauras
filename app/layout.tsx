@@ -6,24 +6,24 @@ import { GlobalContext, PHProvider, PostHogPageview } from "./providers";
 import { Header } from "@/components/header";
 import { encode, decode } from "@/lib/utils";
 
+export const defaultSource = `title 'Shadow Priest WhackAura'
+load spec: :shadow_priest
+hide_ooc!
+
+dynamic_group 'WhackAuras' do
+  debuff_missing 'Shadow Word: Pain'
+end`;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const hash = typeof window !== "undefined" ? window.location.hash : "";
-  const [source, setSource] = useState<string>(
-    `title 'Shadow Priest WhackAura'
-load spec: :shadow_priest
-hide_ooc!
-
-dynamic_group 'WhackAuras' do
-  debuff_missing 'Shadow Word: Pain'
-end`
-  );
+  const [source, setSource] = useState<string>(defaultSource);
 
   useEffect(() => {
-    if (!source || source === "") return;
+    if (!source || source === "" || source === defaultSource) return;
     const base64 = encode(source);
     if (window?.location) window.location.hash = base64;
     history.pushState(null, "", `#${base64}`);
@@ -35,6 +35,7 @@ end`
       setSource(decode(window?.location?.hash));
     };
     window.addEventListener("hashchange", handleHashChange);
+    if (window?.location?.hash) handleHashChange();
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
     };
