@@ -4,6 +4,7 @@ import { resolve } from "path";
 
 export default defineConfig({
   plugins: [react()],
+  assetsInclude: ["**/*.lua", "**/*.rb", "**/*.wasm"],
   resolve: {
     alias: [{ find: "@", replacement: resolve(__dirname) }],
   },

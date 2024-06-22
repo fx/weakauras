@@ -2,23 +2,24 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { LuaEngine, LuaFactory } from "wasmoon";
-import { DefaultRubyVM } from "@ruby/wasm-wasi/dist/browser";
 
-import indexLua from "../public/lua/index.lua";
-import encodeLua from "../public/lua/encode.lua";
-import dkjsonLua from "../public/lua/dkjson.lua";
-import inspectLua from "../public/lua/inspect.lua";
 import libDeflateLua from "../public/lua/LibDeflate.lua";
 import libSerializeLua from "../public/lua/LibSerialize.lua";
+import dkjsonLua from "../public/lua/dkjson.lua";
+import encodeLua from "../public/lua/encode.lua";
+import indexLua from "../public/lua/index.lua";
+import inspectLua from "../public/lua/inspect.lua";
 
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2 } from "lucide-react";
-import { RubyVM } from "@ruby/wasm-wasi";
-import { Editor } from "@monaco-editor/react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { WeakAuraEditor } from "@/components/weak-aura-editor";
 import { initRuby } from "@/lib/compiler";
+import { Editor } from "@monaco-editor/react";
+import { RubyVM } from "@ruby/wasm-wasi";
+import { Check, Loader2 } from "lucide-react";
+import { GlobalContext } from "./providers";
+import { decodeHash, encodeHash } from "@/lib/utils";
 
 async function init() {
   const factory = new LuaFactory();
@@ -41,14 +42,32 @@ async function init() {
   return lua;
 }
 
-export default function Page() {
+export const defaultSource = `title 'Shadow Priest WhackAura'
+load spec: :shadow_priest
+hide_ooc!
+
+dynamic_group 'WhackAuras' do
+  debuff_missing 'Shadow Word: Pain'
+end`;
+
+export default function Page({ children }) {
   const [lua, setLua] = useState<LuaEngine>();
   const [ruby, setRuby] = useState<RubyVM>();
   const [json, _setJson] = useState<string>('{"d": "test"}');
   const [weakaura, setWeakaura] = useState<string>();
+  const [source, setSource] = useState<string>(defaultSource);
+
+  useEffect(() => {
+    if (!source || source === "" || source === defaultSource) return;
+    const base64 = encodeHash(source);
+    if (window?.location) window.location.hash = base64;
+    history.pushState(null, "", `#${base64}`);
+  }, [source]);
+
+  useEffect(() => {}, []);
 
   const setJson = useCallback(
-    (json) => _setJson(JSON.stringify(JSON.parse(json), null, 2)),
+    (json: string) => _setJson(JSON.stringify(JSON.parse(json), null, 2)),
     []
   );
 
@@ -75,10 +94,20 @@ export default function Page() {
         window.ruby = r;
       })
       .catch((e) => console.error(e));
+
+    const handleHashChange = () => {
+      if (!window?.location?.hash) return;
+      setSource(decodeHash(window?.location?.hash));
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    if (window?.location?.hash) handleHashChange();
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
   }, []);
 
   return (
-    <>
+    <GlobalContext.Provider value={{ source, setSource }}>
       <div>
         <div className="font-bold text-xs py-2 px-4 rounded-full bg-gray-100 dark:bg-gray-800 inline-flex align-middle">
           {lua ? (
@@ -134,6 +163,8 @@ export default function Page() {
           />
         </div>
       </div>
-    </>
+
+      {children}
+    </GlobalContext.Provider>
   );
 }

@@ -7,13 +7,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const encode = (source: string) => {
+export const encodeHash = (source: string) => {
   const input = new TextEncoder().encode(source);
   const output = pako.deflate(input);
   return bytesToBase64URL(output);
 };
 
-export const decode = (hash: string) => {
+export const decodeHash = (hash: string) => {
   try {
     const input = base64URLToBytes(hash.replace(/^#/, ""));
     const output = pako.inflate(input);

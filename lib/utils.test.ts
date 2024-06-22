@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { decode, encode } from "./utils";
+import { decodeHash, encodeHash } from "./utils";
 
 describe("utils", () => {
   describe("encode/decode", () => {
     const encoded = "eJxzy89XSMxLUXBKLNJRSMzJUUgsUSjJSFUoTsxNVSjJzE1VBADCFAs-";
     const decoded = "Foo and Bar, all at the same time!";
 
-    it("should encode", () => expect(encode(decoded)).toEqual(encoded));
-    it("should decode", () => expect(decode(encoded)).toEqual(decoded));
+    it("should encode", () => expect(encodeHash(decoded)).toEqual(encoded));
+    it("should decode", () => expect(decodeHash(encoded)).toEqual(decoded));
     it("should not throw, but returned undefined when decoding invalid input", () =>
-      expect(decode("foo")).toBeUndefined());
+      expect(decodeHash("foo")).toBeUndefined());
   });
 });

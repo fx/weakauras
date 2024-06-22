@@ -1,15 +1,7 @@
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
-import Layout, { defaultSource } from "./layout";
 import { cleanup, render } from "@testing-library/react";
 import { useContext } from "react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import Page, { defaultSource } from "./page";
 import { GlobalContext } from "./providers";
 
 const SourceTestComponent = () => {
@@ -21,7 +13,7 @@ const SourceTestComponent = () => {
   );
 };
 
-describe("Layout", () => {
+describe("Page", () => {
   afterEach(cleanup);
   afterEach(() => {
     vi.clearAllMocks();
@@ -29,9 +21,9 @@ describe("Layout", () => {
 
   it("renders", async () => {
     const { getByText } = render(
-      <Layout>
+      <Page>
         <p>hi</p>
-      </Layout>
+      </Page>
     );
     expect(getByText("hi")).toBeDefined();
   });
@@ -39,9 +31,9 @@ describe("Layout", () => {
   it("should not update hash with default source", async () => {
     vi.spyOn(history, "pushState");
     const { getByTestId } = render(
-      <Layout>
+      <Page>
         <SourceTestComponent />
-      </Layout>
+      </Page>
     );
     const source = getByTestId("source");
     expect(source.innerHTML).toMatch(defaultSource);
@@ -54,9 +46,9 @@ describe("Layout", () => {
     window.location.hash = encoded;
 
     const { getByTestId } = render(
-      <Layout>
+      <Page>
         <SourceTestComponent />
-      </Layout>
+      </Page>
     );
     const source = getByTestId("source");
     expect(source.innerHTML).toMatch(decoded);
