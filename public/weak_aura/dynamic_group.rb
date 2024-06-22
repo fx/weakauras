@@ -2,26 +2,28 @@
 
 class WeakAura
   class DynamicGroup < Node # rubocop:disable Metrics/ClassLength,Style/Documentation
+    option :space, default: { x: 2, y: 2 }
+
     def as_json # rubocop:disable Metrics/MethodLength
       custom_grow = <<-LUA
-          function(newPositions, activeRegions)
-            local spaceX = 2
-            local spaceY = 2
-            local gridNum = 4
-            local count, x, y = 0, 0, 0
-            for i, regionData in ipairs(activeRegions) do
-              local region = regionData.region
-              local regionWidth = region.width or 0
-              local regionHeight = region.height or 0
-              if count > 0 and count % gridNum == 0 then
-                y = y + 1
-                x = 0
-              end
-              newPositions[i] = {(regionWidth + spaceX) * x, (regionHeight + spaceY) * y}
-              count = count + 1
-              x = x + 1
+        function(newPositions, activeRegions)
+          local spaceX = #{options[:space][:x]}
+          local spaceY = #{options[:space][:y]}
+          local gridNum = 4
+          local count, x, y = 0, 0, 0
+          for i, regionData in ipairs(activeRegions) do
+            local region = regionData.region
+            local regionWidth = region.width or 0
+            local regionHeight = region.height or 0
+            if count > 0 and count % gridNum == 0 then
+              y = y + 1
+              x = 0
             end
+            newPositions[i] = {(regionWidth + spaceX) * x, (regionHeight + spaceY) * y}
+            count = count + 1
+            x = x + 1
           end
+        end
       LUA
 
       {
