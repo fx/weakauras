@@ -2,16 +2,9 @@
 
 import React, { Suspense, useEffect, useState } from "react";
 import "./globals.css";
-import posthog from "posthog-js";
 import { GlobalContext, PHProvider, PostHogPageview } from "./providers";
 import { Header } from "@/components/header";
 import { encode, decode } from "@/lib/utils";
-
-if (typeof window !== "undefined") {
-  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
-    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-  });
-}
 
 export default function RootLayout({
   children,
