@@ -15,13 +15,13 @@ import { RubyVM } from "@ruby/wasm-wasi";
 import { Check, Loader2 } from "lucide-react";
 import { GlobalContext } from "./providers";
 
-import index from "../public/index.json";
+import assets from "../public/index.json";
 import path from "path";
 
 async function init() {
   const factory = new LuaFactory();
   const lua = await factory.createEngine();
-  const luaAssets = index.lua.filter((path) => path !== "index.lua");
+  const luaAssets = assets.lua.filter((path) => path !== "index.lua");
 
   await Promise.all(
     luaAssets.map(async (name) => {
@@ -39,7 +39,6 @@ export default function Page() {
   const [ruby, setRuby] = useState<RubyVM>();
   const [json, _setJson] = useState<string>('{"d": "test"}');
   const [weakaura, setWeakaura] = useState<string>();
-  const [source, setSource] = useState<string>(defaultSource);
 
   const setJson = useCallback(
     (json: string) => _setJson(JSON.stringify(JSON.parse(json), null, 2)),
@@ -72,7 +71,7 @@ export default function Page() {
   }, []);
 
   return (
-    <GlobalContext.Provider value={{ source, setSource }}>
+    <>
       <div>
         <div className="font-bold text-xs py-2 px-4 rounded-full bg-gray-100 dark:bg-gray-800 inline-flex align-middle">
           {lua ? (
@@ -128,6 +127,6 @@ export default function Page() {
           />
         </div>
       </div>
-    </GlobalContext.Provider>
+    </>
   );
 }
