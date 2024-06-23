@@ -1,0 +1,11 @@
+{
+  "examples": [],
+  "lua": [
+    "/lua/inspect.lua",
+    "/lua/index.lua",
+    "/lua/encode.lua",
+    "/lua/dkjson.lua",
+    "/lua/LibSerialize.lua",
+    "/lua/LibDeflate.lua"
+  ]
+}

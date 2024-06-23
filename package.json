@@ -5,7 +5,8 @@
   "main": "src/lua/index.ts",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run prebuild && next build",
+    "prebuild": "node prebuild.mjs",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",

@@ -3,12 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { LuaEngine, LuaFactory } from "wasmoon";
 
-import libDeflateLua from "../public/lua/LibDeflate.lua";
-import libSerializeLua from "../public/lua/LibSerialize.lua";
-import dkjsonLua from "../public/lua/dkjson.lua";
-import encodeLua from "../public/lua/encode.lua";
 import indexLua from "../public/lua/index.lua";
-import inspectLua from "../public/lua/inspect.lua";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -20,21 +15,19 @@ import { RubyVM } from "@ruby/wasm-wasi";
 import { Check, Loader2 } from "lucide-react";
 import { GlobalContext } from "./providers";
 
+import index from "../public/index.json";
+import path from "path";
+
 async function init() {
   const factory = new LuaFactory();
   const lua = await factory.createEngine();
-  const luaAssets = {
-    "LibDeflate.lua": libDeflateLua,
-    "LibSerialize.lua": libSerializeLua,
-    "dkjson.lua": dkjsonLua,
-    "inspect.lua": inspectLua,
-    "encode.lua": encodeLua,
-  };
+  const luaAssets = index.lua.filter((path) => path !== "index.lua");
 
   await Promise.all(
-    Object.keys(luaAssets).map((name) =>
-      factory.mountFile(name, luaAssets[name])
-    )
+    luaAssets.map(async (name) => {
+      const content = await (await fetch(name)).text();
+      await factory.mountFile(path.basename(name), content);
+    })
   );
 
   await lua.doString(indexLua);
