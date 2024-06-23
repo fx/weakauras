@@ -2,6 +2,11 @@ name: Test
 
 on:
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
   push:
     branches:
       - main
@@ -26,6 +31,7 @@ jobs:
         with:
           fail_ci_if_error: true
   rspec:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     strategy:
       matrix:
