@@ -1,0 +1,38 @@
+{
+  "frontMatter": {
+    "/examples/warrior/arms.rb": {
+      "title": "Warrior: Arms"
+    },
+    "/examples/rogue/outlaw.rb": {
+      "title": "Rogue: Outlaw"
+    },
+    "/examples/priest/shadow.rb": {
+      "title": "Priest: Shadow"
+    },
+    "/examples/paladin/protection.rb": {
+      "title": "Paladin: Protection"
+    },
+    "/examples/hunter/beastmastery.rb": {
+      "title": "Hunter: Beast Mastery"
+    },
+    "/examples/demonhunter/havoc.rb": {
+      "title": "Demon Hunter: Havoc"
+    }
+  },
+  "examples": [
+    "/examples/warrior/arms.rb",
+    "/examples/rogue/outlaw.rb",
+    "/examples/priest/shadow.rb",
+    "/examples/paladin/protection.rb",
+    "/examples/hunter/beastmastery.rb",
+    "/examples/demonhunter/havoc.rb"
+  ],
+  "lua": [
+    "/lua/inspect.lua",
+    "/lua/index.lua",
+    "/lua/encode.lua",
+    "/lua/dkjson.lua",
+    "/lua/LibSerialize.lua",
+    "/lua/LibDeflate.lua"
+  ]
+}

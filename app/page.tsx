@@ -2,39 +2,32 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { LuaEngine, LuaFactory } from "wasmoon";
-import { DefaultRubyVM } from "@ruby/wasm-wasi/dist/browser";
 
 import indexLua from "../public/lua/index.lua";
-import encodeLua from "../public/lua/encode.lua";
-import dkjsonLua from "../public/lua/dkjson.lua";
-import inspectLua from "../public/lua/inspect.lua";
-import libDeflateLua from "../public/lua/LibDeflate.lua";
-import libSerializeLua from "../public/lua/LibSerialize.lua";
 
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Check, Loader2 } from "lucide-react";
-import { RubyVM } from "@ruby/wasm-wasi";
-import { Editor } from "@monaco-editor/react";
-import { WeakAuraEditor } from "@/components/weak-aura-editor";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { WeakAuraEditor, defaultSource } from "@/components/weak-aura-editor";
 import { initRuby } from "@/lib/compiler";
+import { Editor } from "@monaco-editor/react";
+import { RubyVM } from "@ruby/wasm-wasi";
+import { Check, Loader2 } from "lucide-react";
+import { GlobalContext } from "./providers";
+
+import assets from "../public/index.json";
+import path from "path";
 
 async function init() {
   const factory = new LuaFactory();
   const lua = await factory.createEngine();
-  const luaAssets = {
-    "LibDeflate.lua": libDeflateLua,
-    "LibSerialize.lua": libSerializeLua,
-    "dkjson.lua": dkjsonLua,
-    "inspect.lua": inspectLua,
-    "encode.lua": encodeLua,
-  };
+  const luaAssets = assets.lua.filter((path) => path !== "index.lua");
 
   await Promise.all(
-    Object.keys(luaAssets).map((name) =>
-      factory.mountFile(name, luaAssets[name])
-    )
+    luaAssets.map(async (name) => {
+      const content = await (await fetch(name)).text();
+      await factory.mountFile(path.basename(name), content);
+    })
   );
 
   await lua.doString(indexLua);
@@ -48,7 +41,7 @@ export default function Page() {
   const [weakaura, setWeakaura] = useState<string>();
 
   const setJson = useCallback(
-    (json) => _setJson(JSON.stringify(JSON.parse(json), null, 2)),
+    (json: string) => _setJson(JSON.stringify(JSON.parse(json), null, 2)),
     []
   );
 
