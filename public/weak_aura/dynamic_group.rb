@@ -9,27 +9,6 @@ class WeakAura
     option :icon_height, default: nil
 
     def as_json # rubocop:disable Metrics/MethodLength
-      custom_grow = <<-LUA
-        function(newPositions, activeRegions)
-          local spaceX = #{options[:space][:x]}
-          local spaceY = #{options[:space][:y]}
-          local gridNum = 4
-          local count, x, y = 0, 0, 0
-          for i, regionData in ipairs(activeRegions) do
-            local region = regionData.region
-            local regionWidth = region.width or 0
-            local regionHeight = region.height or 0
-            if count > 0 and count % gridNum == 0 then
-              y = y + 1
-              x = 0
-            end
-            newPositions[i] = {(regionWidth + spaceX) * x, (regionHeight + spaceY) * y}
-            count = count + 1
-            x = x + 1
-          end
-        end
-      LUA
-
       {
         anchorFrameType: 'PRD',
         grow: 'GRID',
@@ -126,7 +105,6 @@ class WeakAura
         ],
         parent: parent.id,
         animate: true,
-        customGrow: custom_grow,
         scale: options[:scale],
         centerType: 'LR',
         border: false,
