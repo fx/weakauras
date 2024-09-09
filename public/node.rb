@@ -56,7 +56,7 @@ WOW_SPECS = {
 class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   include Casting::Client
   delegate_missing_methods
-  attr_accessor :uid, :children, :controlled_children, :parent, :triggers, :actions, :type
+  attr_accessor :uid, :children, :controlled_children, :parent, :triggers, :actions, :type, :options
   attr_reader :conditions
 
   def initialize(id: nil, type: nil, parent: nil, triggers: [], actions: { start: [], init: [], finish: [] }, &block) # rubocop:disable Metrics/MethodLength
@@ -69,6 +69,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     @actions = actions
     @conditions = []
     @type = type
+    @options = self.class.options.dup || {}
 
     return unless block_given?
 
@@ -84,15 +85,11 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       options[name] ||= default
 
       define_method(name) do |value = nil|
-        return options[name] unless value
+        return @options[name] unless value
 
-        options[name] = value
+        @options[name] = value
       end
     end
-  end
-
-  def options
-    self.class.options
   end
 
   def id(value = nil)
@@ -105,7 +102,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   alias name id
   alias title id
 
-  def make_triggers(requires, if_missing: [], if_stacks: {}, triggers: []) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+  def make_triggers(requires, if_missing: [], if_stacks: {}, triggers: []) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
     # When passing an array, assume it's auras.
     requires = { auras: requires } if requires.is_a?(Array)
 

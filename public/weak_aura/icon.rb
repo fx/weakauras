@@ -5,6 +5,8 @@ class WeakAura
     def as_json # rubocop:disable Metrics/MethodLength
       super.merge(
         {
+          width: parent.options[:icon_width] || 64,
+          height: parent.options[:icon_height] || parent.options[:icon_width] || 64,
           iconSource: -1,
           authorOptions: [],
           yOffset: 0,
@@ -74,7 +76,6 @@ class WeakAura
               glowBorder: false
             }
           ],
-          height: 64,
           regionType: 'icon',
           animation: {
             start: {
@@ -117,7 +118,6 @@ class WeakAura
           uid: uid,
           inverse: false,
           parent: parent.id,
-          width: 64,
           conditions: conditions,
           information: []
         }
