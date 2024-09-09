@@ -3,6 +3,10 @@
 class WeakAura
   class DynamicGroup < Node # rubocop:disable Metrics/ClassLength,Style/Documentation
     option :space, default: { x: 2, y: 2 }
+    option :offset, default: { x: 0, y: 0 }
+    option :scale, default: 1.0
+    option :icon_width, default: 40
+    option :icon_height, default: nil
 
     def as_json # rubocop:disable Metrics/MethodLength
       custom_grow = <<-LUA
@@ -27,11 +31,23 @@ class WeakAura
       LUA
 
       {
-        grow: 'CUSTOM',
+        anchorFrameType: 'PRD',
+        grow: 'GRID',
+        selfPoint: 'TOP',
+        gridWidth: 4,
+        columnSpace: options[:space][:x],
+        rowSpace: options[:space][:y],
+        anchorFrameParent: false, # Set Parent to Anchor
+
+        # https://github.com/WeakAuras/WeakAuras2/blob/01420f60862f09b04b06aab39b6e2c25e65f0aa0/WeakAuras/Types.lua#L2585
+        gridType: 'HD',
+
+        yOffset: options[:offset][:y],
+        xOffset: options[:offset][:x],
+
         controlledChildren: controlled_children.map(&:id),
         borderBackdrop: 'Blizzard Tooltip',
         authorOptions: [],
-        yOffset: -105.11002604167,
         anchorPoint: 'CENTER',
         borderColor: [
           0,
@@ -60,7 +76,6 @@ class WeakAura
             untrigger: []
           }
         ],
-        columnSpace: 1,
         radius: 200,
         useLimit: false,
         align: 'CENTER',
@@ -88,7 +103,6 @@ class WeakAura
         },
         subRegions: [],
         internalVersion: 70,
-        xOffset: -503.33308919271,
         load: {
           size: {
             multi: []
@@ -113,7 +127,7 @@ class WeakAura
         parent: parent.id,
         animate: true,
         customGrow: custom_grow,
-        scale: 0.75,
+        scale: options[:scale],
         centerType: 'LR',
         border: false,
         borderEdge: 'Square Full White',
@@ -125,22 +139,17 @@ class WeakAura
         fullCircle: true,
         uid: uid,
         constantFactor: 'RADIUS',
-        gridWidth: 5,
         borderOffset: 4,
-        gridType: 'RD',
         tocversion: 100_200,
         id: id,
         rotation: 0,
         frameStrata: 1,
-        anchorFrameType: 'SCREEN',
-        rowSpace: 1,
         borderInset: 1,
         sort: 'none',
         anchorPerUnit: 'CUSTOM',
         arcLength: 360,
         conditions: conditions,
-        information: [],
-        selfPoint: 'BOTTOMLEFT'
+        information: []
       }
     end
   end
