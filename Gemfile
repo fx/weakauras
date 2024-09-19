@@ -7,6 +7,7 @@ group :development do
 end
 
 group :test do
+  gem 'debug'
   gem 'guard'
   gem 'guard-rspec', require: false
   gem 'rspec'

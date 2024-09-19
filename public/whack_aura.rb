@@ -44,6 +44,7 @@ module WhackAura # rubocop:disable Style/Documentation
     if_missing: [],
     if_stacks: {},
     on_show: {},
+    spell_count: nil,
     title: nil,
     &block
   )
