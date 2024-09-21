@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 # gem 'ruby_wasm', github: 'ruby/ruby.wasm'
+gem 'ruby-lsp'
 
 group :development do
   gem 'rubocop'
