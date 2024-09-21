@@ -2,6 +2,10 @@
 
 class WeakAura
   class Icon < Node # rubocop:disable Metrics/ClassLength,Style/Documentation
+    def all_triggers!
+      trigger_options.merge!({ disjunctive: 'all' })
+    end
+
     def action_usable!(**kwargs)
       kwargs = { spell: id }.merge(kwargs)
       triggers << Trigger::ActionUsable.new(**kwargs)
