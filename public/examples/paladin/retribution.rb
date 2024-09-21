@@ -13,7 +13,12 @@ dynamic_group 'Ret WhackAuras' do
   scale 0.8
   action_usable 'Wake of Ashes'
   action_usable 'Judgement'
-  action_usable 'Blade of Justice'
+  icon 'Blade of Justice' do
+    action_usable
+    action_usable spell_count: '>= 2' do
+      glow!
+    end
+  end
   action_usable 'Final Verdict'
   action_usable 'Bladestorm'
   action_usable 'Divine Toll'
