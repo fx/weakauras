@@ -2,11 +2,16 @@
 
 class WeakAura
   class Icon < Node # rubocop:disable Metrics/ClassLength,Style/Documentation
-    def as_json # rubocop:disable Metrics/MethodLength
+    def action_usable!(**kwargs)
+      kwargs = { spell: id }.merge(kwargs)
+      triggers << Trigger::ActionUsable.new(**kwargs)
+    end
+
+    def as_json # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       super.merge(
         {
-          width: parent.options[:icon_width] || 64,
-          height: parent.options[:icon_height] || parent.options[:icon_width] || 64,
+          width: parent&.options&.[](:icon_width) || 64,
+          height: parent&.options&.[](:icon_height) || parent&.options&.[](:icon_width) || 64,
           iconSource: -1,
           authorOptions: [],
           yOffset: 0,
@@ -116,7 +121,7 @@ class WeakAura
           xOffset: 0,
           uid: uid,
           inverse: false,
-          parent: parent.id,
+          parent: parent&.id,
           conditions: conditions,
           information: []
         }
