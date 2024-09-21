@@ -41,6 +41,18 @@ module Trigger
         end
       end
 
+      if options[:charges]
+        charges, charges_operator = parse_count_operator(options[:charges], '==')
+        if charges
+          trigger
+            .merge!({
+                      charges: charges.to_s,
+                      use_charges: true,
+                      charges_operator: charges_operator
+                    })
+        end
+      end
+
       {
         trigger: trigger
       }

@@ -19,7 +19,7 @@ RSpec.describe WeakAura::Icon do
         end
       end.as_json
       trigger = icon[:triggers][1][:trigger]
-      expect(trigger[:spellCount]).to eq(2)
+      expect(trigger[:spellCount]).to eq('2')
     end
   end
 end
