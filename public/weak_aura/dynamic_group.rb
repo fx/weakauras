@@ -118,7 +118,6 @@ class WeakAura
         uid: uid,
         constantFactor: 'RADIUS',
         borderOffset: 4,
-        tocversion: 100_200,
         id: id,
         rotation: 0,
         frameStrata: 1,

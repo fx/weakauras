@@ -64,7 +64,6 @@ class WeakAura
         },
         internalVersion: 70,
         yOffset: 99.999755859375,
-        tocversion: 100_200,
         id: id,
         borderOffset: 4,
         frameStrata: 1,

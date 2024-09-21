@@ -109,7 +109,6 @@ class WeakAura
             1,
             1
           ],
-          tocversion: 100_200,
           id: id,
           config: [],
           alpha: 1,

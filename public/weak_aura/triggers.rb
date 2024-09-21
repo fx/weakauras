@@ -10,6 +10,14 @@ module Trigger
         spell_name: options[:spell]
       }.merge(options)
     end
+
+    def parse_count_operator(count, default_operator = '==')
+      return [count, default_operator] if count.is_a?(Integer)
+
+      operator = count.to_s.match(/^[<>!=]+/)&.[](0) || default_operator
+      count = count.to_s.gsub(/^[<>!=]+/, '').to_i
+      [count, operator]
+    end
   end
 end
 

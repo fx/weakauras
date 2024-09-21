@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+TOC_VERSION = 110_002
+
 WOW_SPECS = {
   blood_deathknight: 250,
   frost_deathknight: 251,
@@ -243,6 +245,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   end
 
   def as_json
-    { load: load, triggers: triggers, actions: actions, conditions: conditions }
+    { load: load, triggers: triggers, actions: actions, conditions: conditions,
+      tocversion: TOC_VERSION }
   end
 end

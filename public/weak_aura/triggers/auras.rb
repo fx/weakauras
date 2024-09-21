@@ -15,7 +15,7 @@ module Trigger
       @options[:aura_names] = [@options[:aura_names]] unless @options[:aura_names].is_a?(Array)
     end
 
-    def as_json # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/AbcSize
+    def as_json # rubocop:disable Metrics/MethodLength
       data = {
         trigger: {
           useName: true,
@@ -38,22 +38,24 @@ module Trigger
         untrigger: []
       }
 
-      if options[:remaining_time]&.positive?
+      rem, rem_operator = parse_count_operator(options[:remaining_time], '<=')
+      if rem
         data.deep_merge!({
                            trigger: {
                              rem: options[:remaining_time].to_s,
-                             remOperator: '<=',
+                             remOperator: rem_operator,
                              useRem: true
                            }
                          })
       end
 
-      if options[:stacks]&.positive?
+      stacks, stacks_operator = parse_count_operator(options[:stacks], '>=')
+      if stacks
         data.deep_merge!({
                            trigger: {
                              "useStacks": true,
-                             "stacksOperator": '>=',
-                             "stacks": options[:stacks].to_s
+                             "stacksOperator": stacks_operator,
+                             "stacks": stacks
                            }
                          })
       end
