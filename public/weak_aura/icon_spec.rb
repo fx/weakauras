@@ -8,9 +8,18 @@ RSpec.describe WeakAura::Icon do
       icon = WeakAura::Icon.new(id: 'Rampage') do
         action_usable!
       end.as_json
-      pp icon
-      trigger = icon[:triggers][0]
-      expect(trigger.options[:spell_name]).to eq('Rampage')
+      trigger = icon[:triggers][1][:trigger]
+      expect(trigger[:spellName]).to eq('Rampage')
+    end
+
+    it 'passes on named arguments' do
+      icon = WeakAura::Icon.new(id: 'Rampage') do
+        action_usable! spell_count: '>= 2' do
+          glow!
+        end
+      end.as_json
+      trigger = icon[:triggers][1][:trigger]
+      expect(trigger[:spellCount]).to eq(2)
     end
   end
 end
