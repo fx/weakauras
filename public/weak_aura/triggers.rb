@@ -18,6 +18,21 @@ module Trigger
       count = count.to_s.gsub(/^[<>!=]+/, '').to_i
       [count, operator]
     end
+
+    def charges(count_op, &block)
+      @options[:charges] = count_op 
+      block.call if block_given?
+    end
+
+    def stacks(count_op, &block)
+      @options[:stacks] = count_op 
+      block.call if block_given?
+    end
+
+    def remaining_time(count_op, &block)
+      @options[:remaining_time] = count_op 
+      block.call if block_given?
+    end
   end
 end
 

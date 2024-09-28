@@ -6,9 +6,10 @@ class WeakAura
       trigger_options.merge!({ disjunctive: 'all' })
     end
 
-    def action_usable!(**kwargs)
+    def action_usable!(**kwargs, &block)
       kwargs = { spell: id }.merge(kwargs)
       triggers << Trigger::ActionUsable.new(**kwargs)
+      block.call if block_given?
     end
 
     def as_json # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity

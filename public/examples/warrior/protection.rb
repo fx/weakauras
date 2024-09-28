@@ -8,7 +8,28 @@ title 'Protection Warrior WhackAura'
 load spec: :protection_warrior
 hide_ooc!
 
+dynamic_group 'Prot Stay Big' do
+  scale 0.7
+  offset y: -40, x: 60
+
+  action_usable 'Avatar'
+  action_usable "Champion's Spear"
+  action_usable 'Shield Wall'
+  action_usable 'Last Stand'
+end
+
+dynamic_group 'Prot Stay Small' do
+  scale 0.7
+  offset y: -40, x: -60
+
+  action_usable 'Thunderous Roar'
+  action_usable 'Demolish'
+end
+
 dynamic_group 'Prot WhackAuras' do
+  scale 0.8
+  offset y: -80
+
   action_usable 'Revenge'
   action_usable 'Shield Slam'
   action_usable 'Shield Block'
