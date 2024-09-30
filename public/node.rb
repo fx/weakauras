@@ -58,16 +58,20 @@ WOW_SPECS = {
 class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   include Casting::Client
   delegate_missing_methods
-  attr_accessor :uid, :children, :controlled_children, :parent, :triggers, :actions, :type, :options
+  attr_accessor :uid, :children, :controlled_children, :parent, :triggers, :trigger_options, :actions, :type, :options
   attr_reader :conditions
 
-  def initialize(id: nil, type: nil, parent: nil, triggers: [], actions: { start: [], init: [], finish: [] }, &block) # rubocop:disable Metrics/MethodLength
+  def initialize(id: nil, type: nil, parent: nil, triggers: [], trigger_options: nil, actions: { start: [], init: [], finish: [] }, &block) # rubocop:disable Metrics/MethodLength,Metrics/ParameterLists,Layout/LineLength
     @uid = Digest::SHA1.hexdigest([id, parent, triggers, actions].to_json)[0..10]
-    @id = "#{id} (#{@uid})"
+    @id = id
     @parent = parent
     @children = []
     @controlled_children = []
     @triggers = triggers
+    @trigger_options = trigger_options || {
+      disjunctive: 'any',
+      activeTriggerMode: -10
+    }
     @actions = actions
     @conditions = []
     @type = type
@@ -138,7 +142,9 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   end
 
   def map_triggers(triggers)
-    Hash[*triggers.each_with_index.to_h { |trigger, index| [index + 1, trigger.as_json] }.flatten]
+    Hash[*triggers.each_with_index.to_h do |trigger, index|
+           [index + 1, trigger.as_json]
+         end.flatten].merge(trigger_options)
   end
 
   def load(spec: nil) # rubocop:disable Metrics/MethodLength
@@ -182,8 +188,9 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   end
 
   def icon(*args, **kwargs, &block)
-    kwargs = { parent: self, type: type }.merge(kwargs)
-    icon = WeakAura::Icon.new(*args, **kwargs, &block)
+    args = { id: args[0] } if args[0].is_a?(String)
+    kwargs = { parent: self, type: type }.merge(args).merge(kwargs)
+    icon = WeakAura::Icon.new(**kwargs, &block)
     add_node(icon)
   end
 
@@ -245,7 +252,11 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   end
 
   def as_json
-    { load: load, triggers: triggers, actions: actions, conditions: conditions,
+    { id: "#{id} (#{@uid})",
+      load: load,
+      triggers: triggers.is_a?(Hash) ? triggers : map_triggers(triggers),
+      actions: actions,
+      conditions: conditions,
       tocversion: TOC_VERSION }
   end
 end

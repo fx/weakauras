@@ -30,20 +30,25 @@ module Trigger
       }
 
       if options[:spell_count]
-        spell_count_operator = options[:spell_count].to_s.match(/[<>=]+/)&.[](0) || '=='
-        spell_count = if options[:spell_count].is_a?(Numeric)
-                        options[:spell_count]
-                      else
-                        options[:spell_count]
-                          .match(/[0-9]+/)&.[](0)
-                      end.to_i
-
+        spell_count, spell_count_operator = parse_count_operator(options[:spell_count], '==')
         if spell_count
           trigger
             .merge!({
-                      spellCount: spell_count,
+                      spellCount: spell_count.to_s,
                       use_spellCount: true,
                       spellCount_operator: spell_count_operator
+                    })
+        end
+      end
+
+      if options[:charges]
+        charges, charges_operator = parse_count_operator(options[:charges], '==')
+        if charges
+          trigger
+            .merge!({
+                      charges: charges.to_s,
+                      use_charges: true,
+                      charges_operator: charges_operator
                     })
         end
       end
