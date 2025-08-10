@@ -12,18 +12,30 @@ mise install
 # Load mise to get node/npm in PATH - MUST be after mise install
 eval "$(mise activate bash)"
 
-# Verify npm is available
-which npm || { echo "ERROR: npm not found after mise activation"; exit 1; }
+# Check if npm is available after mise activation
+if ! which npm > /dev/null 2>&1; then
+    echo "WARNING: npm not found after mise activation. Skipping npm-related setup steps."
+    NPM_AVAILABLE=0
+else
+    echo "✅ npm is available"
+    NPM_AVAILABLE=1
+fi
 
-# Install claude-code globally
-npm install -g @anthropic-ai/claude-code
+# Install claude-code globally if npm is available
+if [ "$NPM_AVAILABLE" -eq 1 ]; then
+    npm install -g @anthropic-ai/claude-code
+else
+    echo "⚠️  Skipping claude-code installation (npm not available)"
+fi
 
 # Configure Claude settings directory (settings managed elsewhere)
 mkdir -p ~/.claude
 
-# Install project dependencies if package.json exists
-if [ -f package.json ]; then
+# Install project dependencies if package.json exists and npm is available
+if [ "$NPM_AVAILABLE" -eq 1 ] && [ -f package.json ]; then
     npm install
+elif [ -f package.json ]; then
+    echo "⚠️  Found package.json but npm not available - skipping project dependency installation"
 fi
 
 # Repository-specific customizations can be added below
