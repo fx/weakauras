@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Create log file with timestamp
 LOG_FILE="/tmp/post-start-$(date +%Y%m%d-%H%M%S).log"

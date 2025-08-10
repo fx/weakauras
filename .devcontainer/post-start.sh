@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Trust the mise configuration if it exists
 if [ -f /workspace/mise.toml ]; then
@@ -17,9 +18,8 @@ which npm || { echo "ERROR: npm not found after mise activation"; exit 1; }
 # Install claude-code globally
 npm install -g @anthropic-ai/claude-code
 
-# Configure Claude settings
+# Configure Claude settings directory (settings managed elsewhere)
 mkdir -p ~/.claude
-echo '{"includeCoAuthoredBy": false}' > ~/.claude/settings.json
 
 # Install project dependencies if package.json exists
 if [ -f package.json ]; then
