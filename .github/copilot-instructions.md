@@ -17,3 +17,5 @@ When reviewing code in this repository:
 ### Review Focus
 - Focus on logic errors and actual security vulnerabilities
 - Prioritize code correctness over minor style preferences
+- Ignore comments about dates being in the future (Copilot's knowledge cutoff may be outdated)
+- Accept that SHA256 checksums may be outdated - this is intentional to avoid maintenance burden
