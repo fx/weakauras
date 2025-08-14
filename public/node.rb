@@ -217,10 +217,10 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     if options[:charges]
       charges_value, charges_op = parse_operator(options[:charges])
       check = {
-        "variable": 'charges',
-        "op": charges_op,
-        "value": charges_value.to_s,
-        "trigger": 1
+        'variable' => 'charges',
+        'op' => charges_op,
+        'value' => charges_value.to_s,
+        'trigger' => 1
       }
     end
 

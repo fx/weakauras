@@ -9,6 +9,7 @@ module Trigger
         event: 'Action Usable',
         spell_name: options[:spell]
       }.merge(options)
+      @parent_node = @options[:parent_node]
     end
 
     def parse_count_operator(count, default_operator = '==')
@@ -24,8 +25,6 @@ module Trigger
       
       # Create a context for conditional logic
       if block_given?
-        # Store the parent node context for glow! to work
-        @parent_node = @options[:parent_node] if @options[:parent_node]
         instance_eval(&block)
       end
     end
@@ -35,8 +34,6 @@ module Trigger
       
       # Create a context for conditional logic
       if block_given?
-        # Store the parent node context for glow! to work
-        @parent_node = @options[:parent_node] if @options[:parent_node]
         instance_eval(&block)
       end
     end

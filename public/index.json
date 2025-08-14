@@ -15,11 +15,11 @@
     "/examples/shaman/elemental.rb": {
       "title": "Shaman: Elemental"
     },
-    "/examples/priest/shadow.rb": {
-      "title": "Priest: Shadow"
-    },
     "/examples/rogue/outlaw.rb": {
       "title": "Rogue: Outlaw"
+    },
+    "/examples/priest/shadow.rb": {
+      "title": "Priest: Shadow"
     },
     "/examples/paladin/retribution.rb": {
       "title": "Paladin: Retribution"
@@ -35,6 +35,9 @@
     },
     "/examples/demonhunter/havoc.rb": {
       "title": "Demon Hunter: Havoc"
+    },
+    "/examples/deathknight/frost.rb": {
+      "title": "Death Knight: Frost (11.2)"
     }
   },
   "examples": [
@@ -43,13 +46,14 @@
     "/examples/warrior/arms.rb",
     "/examples/shaman/restoration.rb",
     "/examples/shaman/elemental.rb",
-    "/examples/priest/shadow.rb",
     "/examples/rogue/outlaw.rb",
+    "/examples/priest/shadow.rb",
     "/examples/paladin/retribution.rb",
     "/examples/paladin/protection.rb",
     "/examples/mage/frost.rb",
     "/examples/hunter/beastmastery.rb",
-    "/examples/demonhunter/havoc.rb"
+    "/examples/demonhunter/havoc.rb",
+    "/examples/deathknight/frost.rb"
   ],
   "lua": [
     "/lua/inspect.lua",
