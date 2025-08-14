@@ -1,6 +1,6 @@
 {
   "name": "weakauras",
-  "image": "codercom/enterprise-base:ubuntu",
-  "features": {},
-  "postCreateCommand": "bash -i -c .devcontainer/install-deps.sh"
+  "image": "ghcr.io/fx/docker/devcontainer:latest",
+  "containerUser": "vscode",
+  "postStartCommand": "bash .devcontainer/post-start-wrapper.sh"
 }
