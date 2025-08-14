@@ -237,12 +237,12 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   end
 
   def aura(name, **options, &block)
-    # Add an aura trigger for conditional logic
+    # Adds an aura trigger for conditional logic
     options[:parent_node] = self
     trigger = Trigger::Auras.new(aura_names: name, **options)
     triggers << trigger
     
-    # Execute block in context of trigger for nested conditions  
+    # Executes block in context of trigger for nested conditions
     trigger.instance_eval(&block) if block_given?
     trigger
   end

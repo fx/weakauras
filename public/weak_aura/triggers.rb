@@ -47,7 +47,7 @@ module Trigger
     end
 
     def remaining_time(count_op, &block)
-      @options[:remaining_time] = count_op 
+      @options[:remaining_time] = count_op
       block.call if block_given?
     end
   end
