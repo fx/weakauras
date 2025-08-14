@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   assetsInclude: ["**/*.lua", "**/*.rb", "**/*.wasm"],
   resolve: {
-    alias: [{ find: "@", replacement: resolve(__dirname) }],
+    alias: [{ find: "@", replacement: resolve(import.meta.dirname) }],
   },
   test: {
     setupFiles: ["./vitest.setup.tsx"],
@@ -17,8 +17,12 @@ export default defineConfig({
     },
     browser: {
       enabled: true,
-      provider: "playwright",
-      name: "chromium",
+      instances: [
+        {
+          browser: "chromium",
+          provider: "playwright",
+        },
+      ],
     },
   },
 });
