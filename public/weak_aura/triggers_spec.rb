@@ -51,4 +51,27 @@ RSpec.describe Trigger::Base do
       expect { trigger.glow! }.not_to raise_error
     end
   end
+
+  describe '#remaining_time' do
+    it 'sets remaining_time option' do
+      trigger = Trigger::Base.new
+      trigger.remaining_time('<= 5')
+      expect(trigger.options[:remaining_time]).to eq('<= 5')
+    end
+
+    it 'executes block when provided' do
+      trigger = Trigger::Base.new
+      block_executed = false
+      trigger.remaining_time(10) do
+        block_executed = true
+      end
+      expect(block_executed).to be true
+    end
+
+    it 'works without a block' do
+      trigger = Trigger::Base.new
+      expect { trigger.remaining_time(5) }.not_to raise_error
+      expect(trigger.options[:remaining_time]).to eq(5)
+    end
+  end
 end

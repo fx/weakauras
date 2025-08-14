@@ -79,6 +79,21 @@ RSpec.describe Node do
     end
   end
 
+  describe '#hide_ooc!' do
+    it 'adds a condition to hide out of combat' do
+      node = Node.new
+      node.hide_ooc!
+      expect(node.conditions).not_to be_empty
+      condition = node.conditions.first
+      expect(condition[:check][:trigger]).to eq(-1)
+      expect(condition[:check][:variable]).to eq('incombat')
+      expect(condition[:check][:value]).to eq(0)
+      expect(condition[:changes]).to include(
+        hash_including(property: 'alpha')
+      )
+    end
+  end
+
   describe 'option' do
     it 'allows setting and modifying the default' do
       Node.option :foo, default: 'bar'

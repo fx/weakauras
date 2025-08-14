@@ -3,6 +3,14 @@
 require './spec/spec_helper'
 
 RSpec.describe WeakAura::Icon do
+  describe '#all_triggers!' do
+    it 'sets trigger disjunctive to all' do
+      icon = WeakAura::Icon.new(id: 'Test')
+      icon.all_triggers!
+      expect(icon.trigger_options[:disjunctive]).to eq('all')
+    end
+  end
+
   describe 'action_usable!' do
     it 'adds an ActionUsable trigger that defaults to the icons name' do
       icon = WeakAura::Icon.new(id: 'Rampage') do
