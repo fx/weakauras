@@ -21,5 +21,21 @@ RSpec.describe WeakAura::Icon do
       trigger = icon[:triggers][1][:trigger]
       expect(trigger[:spellCount]).to eq('2')
     end
+
+    it 'passes parent_node context to trigger' do
+      icon = WeakAura::Icon.new(id: 'Test')
+      icon.action_usable!
+      trigger = icon.triggers.last
+      expect(trigger.options[:parent_node]).to eq(icon)
+    end
+
+    it 'executes block in trigger context' do
+      icon = WeakAura::Icon.new(id: 'Test')
+      block_executed = false
+      icon.action_usable! do
+        block_executed = true
+      end
+      expect(block_executed).to be true
+    end
   end
 end
