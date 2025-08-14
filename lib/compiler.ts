@@ -70,8 +70,9 @@ export const initRuby = async (
   };
 
   const response = fetch("/ruby.wasm");
-  const module = await compileWebAssemblyModule(response);
-  return await DefaultRubyVM(module, options);
+  // eslint-disable-next-line @next/next/no-assign-module-variable
+  const wasmModule = await compileWebAssemblyModule(response);
+  return await DefaultRubyVM(wasmModule, options);
 };
 
 export const compile = async (ruby: RubyVM, source: string) => {

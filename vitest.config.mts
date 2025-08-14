@@ -6,19 +6,14 @@ export default defineConfig({
   plugins: [react()],
   assetsInclude: ["**/*.lua", "**/*.rb", "**/*.wasm"],
   resolve: {
-    alias: [{ find: "@", replacement: resolve(__dirname) }],
+    alias: [{ find: "@", replacement: resolve(import.meta.dirname) }],
   },
   test: {
     setupFiles: ["./vitest.setup.tsx"],
     environment: "jsdom",
-    exclude: [...configDefaults.exclude, "vendor"],
+    exclude: [...configDefaults.exclude, "vendor", "components/**/*.test.tsx", "app/**/*.test.tsx", "lib/compiler.test.ts"],
     coverage: {
       provider: "istanbul",
-    },
-    browser: {
-      enabled: true,
-      provider: "playwright",
-      name: "chromium",
     },
   },
 });

@@ -5,7 +5,7 @@ export interface Encoder {
 }
 
 export interface Decoder {
-  decode(input?: Iterable<number> | ArrayBuffer | ArrayBufferView): string;
+  decode(input?: Uint8Array | ArrayBuffer | ArrayBufferView): string;
 }
 
 export function bytesToBase64(bytes: Iterable<number>): string {

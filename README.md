@@ -22,25 +22,46 @@ end
 
 ### Build
 
-```
-bundle exec rbwasm build -o public/ruby.wasm
-```
+Ruby WASM file is pre-built and included in `public/ruby.wasm`. 
 
-`ruby_wasm` 2.5.1.pre.1 currently does not build for me, there is no other version on rubygems.org, so you'll have to build [ruby.wasm](https://github.com/ruby/ruby.wasm) @ 2.4.1
-
-
+To rebuild (requires Ruby and bundler):
 ```
-apt install libclang-dev
-rake build
+make pack
 ```
 
 ### Install
 
-Install your favorite ruby and node version. Check out [mise](https://mise.jdx.dev/)
+Install Node.js and npm dependencies:
+```
+npm install
+```
+
+Ruby dependencies are optional (only needed for rebuilding WASM):
+```
+bundle install  # Optional - only if rebuilding WASM
+```
 
 ### Run
 
-See `make.rb`
+Development server:
+```
+npm run dev
+```
+
+Build for production:
+```
+npm run build
+```
+
+Test:
+```
+npm test
+```
+
+Lint:
+```
+npm run lint
+```
 
 ### The WASI Way
 
