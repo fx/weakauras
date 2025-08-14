@@ -38,9 +38,9 @@ module Trigger
       end
     end
     
-    def glow!(options = {})
+    def glow!(**options)
       # Forward glow! to parent node if available
-      @parent_node.glow!(options) if @parent_node&.respond_to?(:glow!)
+      @parent_node.glow!(**options) if @parent_node&.respond_to?(:glow!)
     end
 
     def remaining_time(count_op, &block)

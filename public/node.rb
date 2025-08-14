@@ -202,7 +202,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     node
   end
 
-  def glow!(options = {}) # rubocop:disable Metrics/MethodLength
+  def glow!(**options) # rubocop:disable Metrics/MethodLength
     raise 'glow! only supports a single check, use multiple `glow!` calls for multiple checks.' if options.keys.size > 1
 
     check = []
