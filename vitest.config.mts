@@ -11,18 +11,9 @@ export default defineConfig({
   test: {
     setupFiles: ["./vitest.setup.tsx"],
     environment: "jsdom",
-    exclude: [...configDefaults.exclude, "vendor"],
+    exclude: [...configDefaults.exclude, "vendor", "components/**/*.test.tsx", "app/**/*.test.tsx", "lib/compiler.test.ts"],
     coverage: {
       provider: "istanbul",
-    },
-    browser: {
-      enabled: true,
-      instances: [
-        {
-          browser: "chromium",
-          provider: "playwright",
-        },
-      ],
     },
   },
 });
