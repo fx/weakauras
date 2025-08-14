@@ -215,15 +215,16 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     end
 
     if options[:charges]
+      charges_value, charges_op = parse_operator(options[:charges])
       check = {
         "variable": 'charges',
-        "op": '==',
-        "value": options[:charges].to_s,
+        "op": charges_op,
+        "value": charges_value.to_s,
         "trigger": 1
       }
     end
 
-    @conditions ||= {}
+    @conditions ||= []
     @conditions << {
       check: check,
       changes: [
@@ -235,8 +236,28 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     }
   end
 
+  def aura(name, **options, &block)
+    # Add an aura trigger for conditional logic
+    options[:parent_node] = self
+    trigger = Trigger::Auras.new(aura_names: name, **options)
+    triggers << trigger
+    
+    # Execute block in context of trigger for nested conditions  
+    trigger.instance_eval(&block) if block_given?
+    trigger
+  end
+
+  def parse_operator(value)
+    return [value, '=='] if value.is_a?(Integer)
+    
+    value_str = value.to_s
+    operator = value_str.match(/^[<>!=]+/)&.[](0) || '=='
+    parsed_value = value_str.gsub(/^[<>!=]+\s*/, '').to_i
+    [parsed_value, operator]
+  end
+
   def hide_ooc! # rubocop:disable Metrics/MethodLength
-    @conditions ||= {}
+    @conditions ||= []
     @conditions << {
       check: {
         trigger: -1,

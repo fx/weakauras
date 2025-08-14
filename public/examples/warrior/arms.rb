@@ -36,21 +36,9 @@ dynamic_group 'Arms WhackAuras' do
   end
   action_usable 'Bladestorm'
   action_usable 'Wrecking Throw'
-  # TODO: cleave instead of MS display when more than N targets?
   action_usable 'Cleave'
-  # action_usable 'Whirlwind'
-
-  # TODO: add `stacks` to glow! instead
-  # Min-maxing OP>MS is not recommended.
-  # action_usable 'Mortal Strike', if_stacks: { 'Overpower' => 2 } do
-  #   glow!
-  # end
-  # action_usable 'Overpower' do
-  #   glow! charges: 2
-  # end
 
   action_usable ['Mortal Strike', 'Overpower']
-  # action_usable 'Thunder Clap', requires: { target_debuffs_missing: ['Rend'] }
   action_usable 'Rend', requires: { target_debuffs_missing: ['Rend'] }
   action_usable 'Sweeping Strikes'
 end

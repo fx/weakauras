@@ -16,16 +16,11 @@ dynamic_group 'Frost Mage WhackAuras' do
           glow!
         end
       end
-      # charges '>= 2' do
-      #   glow!
-      # end
     end
-    # glow if cryopathy stacks >= 10?
-    # 
   end
 
   icon 'Ring of Fire' do
-    action_usable! do
+    action_usable!
   end
 
   action_usable 'Comet Storm'

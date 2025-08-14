@@ -20,13 +20,30 @@ module Trigger
     end
 
     def charges(count_op, &block)
-      @options[:charges] = count_op 
-      block.call if block_given?
+      @options[:charges] = count_op
+      
+      # Create a context for conditional logic
+      if block_given?
+        # Store the parent node context for glow! to work
+        @parent_node = @options[:parent_node] if @options[:parent_node]
+        instance_eval(&block)
+      end
     end
 
     def stacks(count_op, &block)
-      @options[:stacks] = count_op 
-      block.call if block_given?
+      @options[:stacks] = count_op
+      
+      # Create a context for conditional logic
+      if block_given?
+        # Store the parent node context for glow! to work
+        @parent_node = @options[:parent_node] if @options[:parent_node]
+        instance_eval(&block)
+      end
+    end
+    
+    def glow!(options = {})
+      # Forward glow! to parent node if available
+      @parent_node.glow!(options) if @parent_node&.respond_to?(:glow!)
     end
 
     def remaining_time(count_op, &block)

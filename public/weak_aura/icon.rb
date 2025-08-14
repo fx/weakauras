@@ -7,9 +7,10 @@ class WeakAura
     end
 
     def action_usable!(**kwargs, &block)
-      kwargs = { spell: id }.merge(kwargs)
-      triggers << Trigger::ActionUsable.new(**kwargs)
-      block.call if block_given?
+      kwargs = { spell: id, parent_node: self }.merge(kwargs)
+      trigger = Trigger::ActionUsable.new(**kwargs)
+      triggers << trigger
+      trigger.instance_eval(&block) if block_given?
     end
 
     def as_json # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
