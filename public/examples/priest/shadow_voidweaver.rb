@@ -41,7 +41,6 @@ dynamic_group 'Defensive' do
   action_usable 'Dispersion'
   action_usable 'Vampiric Embrace'
   action_usable 'Desperate Prayer'
-  action_usable 'Fade'
 end
 
 # Main rotation - larger, center
@@ -49,9 +48,9 @@ dynamic_group 'WhackAuras' do
   scale 0.8
   offset y: -70
   
-  # DoT tracking
-  debuff_missing 'Shadow Word: Pain', remaining_time: 5.4
-  debuff_missing 'Vampiric Touch', remaining_time: 6.3
+  # DoT tracking - show when missing or expiring
+  auras 'Shadow Word: Pain', show_on: :missing, type: 'debuff', unit: 'target', remaining_time: 5.4
+  auras 'Vampiric Touch', show_on: :missing, type: 'debuff', unit: 'target', remaining_time: 6.3
   
   # Core rotation abilities
   action_usable 'Mind Blast' do
@@ -71,11 +70,12 @@ dynamic_group 'WhackAuras' do
   end
   
   action_usable 'Mind Spike'
-  action_usable 'Mind Flay'
   
-  # Interrupts (M+ utility)
-  action_usable 'Silence'
-  action_usable 'Psychic Scream'
+  # Mind Flay: Insanity - only show when empowered
+  icon 'Mind Flay: Insanity' do
+    action_usable! spell: 'Mind Flay: Insanity'
+    aura 'Mind Flay: Insanity', show_on: :active
+  end
   
   # Proc tracking
   icon 'Surge of Insanity' do
