@@ -8,9 +8,12 @@ title 'Shadow Priest Voidweaver M+'
 load spec: :shadow_priest
 hide_ooc!
 
-dynamic_group 'Core Rotation' do
+# Primary WhackAuras Group - All abilities except major cooldowns
+dynamic_group 'WhackAuras' do
+  grow direction: :right
   offset y: -100
   
+  # Core rotation abilities
   action_usable 'Mind Blast' do
     glow! charges: '>= 2'
   end
@@ -26,76 +29,44 @@ dynamic_group 'Core Rotation' do
   action_usable 'Shadow Crash'
   
   action_usable 'Mind Spike'
+  
   action_usable 'Mind Flay'
-end
-
-dynamic_group 'DoT Management' do
-  offset y: -40, x: -120
-  scale 0.8
   
-  debuff_missing 'Shadow Word: Pain' do
+  # DoT tracking
+  debuff_missing 'Shadow Word: Pain', remaining_time: 5.4
+  
+  debuff_missing 'Vampiric Touch', remaining_time: 6.3
+  
+  # Proc tracking
+  icon 'Surge of Insanity' do
+    aura 'Surge of Insanity', show_on: :active
     glow!
   end
   
-  debuff_missing 'Vampiric Touch' do
+  icon 'Deathspeaker' do
+    aura 'Deathspeaker', show_on: :active
     glow!
   end
   
-  auras 'Shadow Word: Pain', type: 'debuff', unit: 'target', remaining_time: 5.4 do
+  icon 'Mind Devourer' do
+    aura 'Mind Devourer', show_on: :active
     glow!
   end
   
-  auras 'Vampiric Touch', type: 'debuff', unit: 'target', remaining_time: 5.4 do
-    glow!
-  end
-end
-
-dynamic_group 'Burst Window' do
-  offset y: -40, x: 120
-  scale 0.8
-  
-  action_usable 'Entropic Rift' do
-    glow!
+  # Voidweaver specific
+  icon 'Void Empowerment' do
+    aura 'Void Empowerment', show_on: :active, stacks: '>= 1'
   end
   
-  action_usable 'Dark Ascension'
-  
-  action_usable 'Void Eruption'
-  
-  action_usable 'Power Infusion'
-  
-  action_usable 'Shadowfiend'
-  
-  action_usable 'Mindbender'
-end
-
-dynamic_group 'Procs & Resources' do
-  offset y: 20
-  scale 0.7
-  
-  aura_active 'Surge of Insanity' do
-    glow!
+  icon 'Voidwraith' do
+    aura 'Voidwraith', show_on: :active
   end
   
-  aura_active 'Deathspeaker' do
-    glow!
+  icon 'Collapsing Void' do
+    aura 'Collapsing Void', show_on: :active
   end
   
-  aura_active 'Mind Devourer' do
-    glow!
-  end
-  
-  aura_active 'Void Empowerment'
-  
-  aura_active 'Voidwraith'
-  
-  aura_active 'Collapsing Void'
-end
-
-dynamic_group 'M+ Utilities' do
-  offset y: 80
-  scale 0.6
-  
+  # M+ Utilities
   action_usable 'Silence'
   
   action_usable 'Psychic Scream'
@@ -103,4 +74,30 @@ dynamic_group 'M+ Utilities' do
   action_usable 'Dispersion'
   
   action_usable 'Vampiric Embrace'
+end
+
+# BAM Group - Major offensive cooldowns only
+dynamic_group 'BAM' do
+  grow direction: :right
+  offset y: -50
+  
+  action_usable 'Entropic Rift' do
+    glow!
+  end
+  
+  action_usable 'Dark Ascension' do
+    glow!
+  end
+  
+  action_usable 'Void Eruption' do
+    glow!
+  end
+  
+  action_usable 'Power Infusion' do
+    glow!
+  end
+  
+  action_usable 'Shadowfiend'
+  
+  action_usable 'Mindbender'
 end
