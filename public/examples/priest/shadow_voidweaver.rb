@@ -8,10 +8,50 @@ title 'Shadow Priest Voidweaver M+'
 load spec: :shadow_priest
 hide_ooc!
 
-# Primary WhackAuras Group - All abilities except major cooldowns
+# Offensive cooldowns - small, top-left
+dynamic_group 'BAM' do
+  scale 0.6
+  offset y: -40, x: 80
+  
+  action_usable 'Entropic Rift' do
+    glow!
+  end
+  
+  action_usable 'Dark Ascension' do
+    glow!
+  end
+  
+  action_usable 'Void Eruption' do
+    glow!
+  end
+  
+  action_usable 'Power Infusion' do
+    glow!
+  end
+  
+  action_usable 'Shadowfiend'
+  action_usable 'Mindbender'
+end
+
+# Defensive abilities - small, top-right
+dynamic_group 'Defensive' do
+  scale 0.6
+  offset y: -40, x: -80
+  
+  action_usable 'Dispersion'
+  action_usable 'Vampiric Embrace'
+  action_usable 'Desperate Prayer'
+  action_usable 'Fade'
+end
+
+# Main rotation - larger, center
 dynamic_group 'WhackAuras' do
-  grow direction: :right
-  offset y: -100
+  scale 0.8
+  offset y: -70
+  
+  # DoT tracking
+  debuff_missing 'Shadow Word: Pain', remaining_time: 5.4
+  debuff_missing 'Vampiric Touch', remaining_time: 6.3
   
   # Core rotation abilities
   action_usable 'Mind Blast' do
@@ -26,16 +66,16 @@ dynamic_group 'WhackAuras' do
   
   action_usable 'Void Blast'
   
-  action_usable 'Shadow Crash'
+  action_usable 'Shadow Crash' do
+    glow!
+  end
   
   action_usable 'Mind Spike'
-  
   action_usable 'Mind Flay'
   
-  # DoT tracking
-  debuff_missing 'Shadow Word: Pain', remaining_time: 5.4
-  
-  debuff_missing 'Vampiric Touch', remaining_time: 6.3
+  # Interrupts (M+ utility)
+  action_usable 'Silence'
+  action_usable 'Psychic Scream'
   
   # Proc tracking
   icon 'Surge of Insanity' do
@@ -65,39 +105,4 @@ dynamic_group 'WhackAuras' do
   icon 'Collapsing Void' do
     aura 'Collapsing Void', show_on: :active
   end
-  
-  # M+ Utilities
-  action_usable 'Silence'
-  
-  action_usable 'Psychic Scream'
-  
-  action_usable 'Dispersion'
-  
-  action_usable 'Vampiric Embrace'
-end
-
-# BAM Group - Major offensive cooldowns only
-dynamic_group 'BAM' do
-  grow direction: :right
-  offset y: -50
-  
-  action_usable 'Entropic Rift' do
-    glow!
-  end
-  
-  action_usable 'Dark Ascension' do
-    glow!
-  end
-  
-  action_usable 'Void Eruption' do
-    glow!
-  end
-  
-  action_usable 'Power Infusion' do
-    glow!
-  end
-  
-  action_usable 'Shadowfiend'
-  
-  action_usable 'Mindbender'
 end
