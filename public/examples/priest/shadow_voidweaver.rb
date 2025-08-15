@@ -48,9 +48,20 @@ dynamic_group 'WhackAuras' do
   scale 0.8
   offset y: -70
   
-  # DoT tracking - show when missing or expiring
-  auras 'Shadow Word: Pain', show_on: :missing, type: 'debuff', unit: 'target', remaining_time: 5.4
-  auras 'Vampiric Touch', show_on: :missing, type: 'debuff', unit: 'target', remaining_time: 6.3
+  # DoT tracking - show when missing OR expiring
+  icon 'Shadow Word: Pain' do
+    # Trigger 1: Show when missing
+    aura 'Shadow Word: Pain', show_on: :missing, type: 'debuff', unit: 'target'
+    # Trigger 2: Show when expiring (< 5.4s remaining)
+    aura 'Shadow Word: Pain', show_on: :active, type: 'debuff', unit: 'target', remaining_time: 5.4
+  end
+  
+  icon 'Vampiric Touch' do
+    # Trigger 1: Show when missing
+    aura 'Vampiric Touch', show_on: :missing, type: 'debuff', unit: 'target'
+    # Trigger 2: Show when expiring (< 6.3s remaining)
+    aura 'Vampiric Touch', show_on: :active, type: 'debuff', unit: 'target', remaining_time: 6.3
+  end
   
   # Core rotation abilities
   action_usable 'Mind Blast' do
