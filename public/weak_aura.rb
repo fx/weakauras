@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'core_ext/hash'
 require_relative 'node'
 
 class WeakAura < Node # rubocop:disable Style/Documentation
@@ -80,9 +81,20 @@ class WeakAura < Node # rubocop:disable Style/Documentation
     }
   end
 
+  def all_descendants
+    result = []
+    children.each do |child|
+      result << child
+      if child.respond_to?(:children) && child.children.any?
+        result.concat(child.all_descendants)
+      end
+    end
+    result
+  end
+
   def export
     {
-      c: children.map(&:as_json),
+      c: all_descendants.map(&:as_json),
       m: 'd',
       d: as_json,
       s: '5.8.6',

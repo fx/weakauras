@@ -45,6 +45,7 @@ module WhackAura # rubocop:disable Style/Documentation
     if_stacks: {},
     on_show: {},
     spell_count: nil,
+    charges: nil,
     title: nil,
     &block
   )
@@ -59,7 +60,10 @@ module WhackAura # rubocop:disable Style/Documentation
       end.join(' + ')
     end
     triggers = spells.to_a.map do |kwargs|
-      kwargs = { spell: kwargs } if kwargs.is_a?(String)
+      if kwargs.is_a?(String)
+        kwargs = { spell: kwargs }
+        kwargs[:charges] = charges if charges
+      end
       Trigger::ActionUsable.new(**kwargs)
     end
 
@@ -70,24 +74,73 @@ module WhackAura # rubocop:disable Style/Documentation
       triggers: triggers
     ).merge({ disjunctive: spells.size > 1 ? 'any' : 'all', activeTriggerMode: -10 })
 
-    if on_show[:event]
-      actions =
-        {
-          start: {
-            do_custom: true,
-            custom: "WeakAuras.ScanEvents('#{on_show[:event]}', true)"
-          },
-          init: [],
-          finish: {
-            do_custom: true,
-            custom: "WeakAuras.ScanEvents('#{on_show[:event]}', false)"
-          }
+    actions = if on_show[:event]
+      {
+        start: {
+          do_custom: true,
+          custom: "WeakAuras.ScanEvents('#{on_show[:event]}', true)"
+        },
+        init: [],
+        finish: {
+          do_custom: true,
+          custom: "WeakAuras.ScanEvents('#{on_show[:event]}', false)"
         }
-
+      }
+    else
+      nil
     end
 
     node = WeakAura::Icon.new(id: title, parent: self, triggers: triggers, actions: actions, &block)
     add_node(node)
   end
   # rubocop:enable
+
+  def power_check(power_type, value, **kwargs, &block)
+    kwargs = { power_type: power_type, value: value, parent: self }.merge(kwargs)
+    trigger = Trigger::Power.new(**kwargs)
+    triggers = map_triggers([trigger])
+    
+    add_node(WeakAura::Icon.new(id: "Power #{power_type.to_s.gsub('_', ' ').capitalize}", parent: self, triggers: triggers, &block))
+  end
+
+  def rune_check(count, **kwargs, &block)
+    kwargs = { rune_count: count, parent: self }.merge(kwargs)
+    trigger = Trigger::Runes.new(**kwargs)
+    triggers = map_triggers([trigger])
+    
+    add_node(WeakAura::Icon.new(id: "Runes Check", parent: self, triggers: triggers, &block))
+  end
+
+  def talent_active(talent_name, **kwargs, &block)
+    kwargs = { talent_name: talent_name, selected: true, parent: self }.merge(kwargs)
+    trigger = Trigger::Talent.new(**kwargs)
+    triggers = map_triggers([trigger])
+    
+    add_node(WeakAura::Icon.new(id: talent_name, parent: self, triggers: triggers, &block))
+  end
+
+  def combat_state(check_type, **kwargs, &block)
+    kwargs = { check_type: check_type, parent: self }.merge(kwargs)
+    trigger = Trigger::CombatState.new(**kwargs)
+    triggers = map_triggers([trigger])
+    
+    case check_type
+    when :in_combat
+      id = "In Combat"
+    when :unit_count
+      id = "Multiple Enemies"
+    else
+      id = "Combat Check"
+    end
+    
+    add_node(WeakAura::Icon.new(id: id, parent: self, triggers: triggers, &block))
+  end
+
+  def multi_target_rotation(unit_count: 2, &block)
+    combat_state(:unit_count, unit_count: unit_count, &block)
+  end
+
+  def resource_pooling(power_type, threshold, &block)
+    power_check(power_type, ">= #{threshold}", &block)
+  end
 end

@@ -102,7 +102,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     return @id unless value
 
     @uid = Digest::SHA1.hexdigest([value, parent, triggers, actions].to_json)[0..10]
-    @id = "#{value} (#{@uid})"
+    @id = value
   end
 
   alias name id
@@ -143,7 +143,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
 
   def map_triggers(triggers)
     Hash[*triggers.each_with_index.to_h do |trigger, index|
-           [index + 1, trigger.as_json]
+           [(index + 1).to_s, trigger.as_json]
          end.flatten].merge(trigger_options)
   end
 
@@ -153,16 +153,16 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       class_and_spec: class_and_spec,
       use_class_and_spec: class_and_spec ? true : false,
       size: {
-        multi: []
+        multi: {}
       },
       talent: {
-        multi: []
+        multi: {}
       },
       spec: {
-        multi: []
+        multi: {}
       },
       class: {
-        multi: []
+        multi: {}
       }
     }
   end
@@ -196,10 +196,19 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
 
   def add_node(node)
     @children << node
-    # Merge up all children on all parents. Nothing includes this, only the top level WeakAura.
     controlled_children << node
-    parent.children.concat(children).uniq! if parent
     node
+  end
+
+  def all_descendants
+    result = []
+    children.each do |child|
+      result << child
+      if child.respond_to?(:children) && child.children.any?
+        result.concat(child.all_descendants)
+      end
+    end
+    result
   end
 
   def glow!(**options) # rubocop:disable Metrics/MethodLength
@@ -272,8 +281,92 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     }
   end
 
+  def and_conditions(*checks, &block) # rubocop:disable Metrics/MethodLength
+    @conditions ||= []
+    condition_checks = checks.map do |check|
+      build_condition_check(check)
+    end
+    
+    @conditions << {
+      check: {
+        checks: condition_checks,
+        combine_type: 'and'
+      },
+      changes: block ? instance_eval(&block) : [{ property: 'alpha', value: 1 }]
+    }
+  end
+
+  def or_conditions(*checks, &block) # rubocop:disable Metrics/MethodLength
+    @conditions ||= []
+    condition_checks = checks.map do |check|
+      build_condition_check(check)
+    end
+    
+    @conditions << {
+      check: {
+        checks: condition_checks,
+        combine_type: 'or'
+      },
+      changes: block ? instance_eval(&block) : [{ property: 'alpha', value: 1 }]
+    }
+  end
+
+  def priority(level = nil)
+    return @priority unless level
+    @priority = level
+  end
+
+  def exclusive_group(group_name = nil)
+    return @exclusive_group unless group_name
+    @exclusive_group = group_name
+  end
+
+  private
+
+  def build_condition_check(check) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity
+    case check
+    when Hash
+      if check[:aura]
+        {
+          trigger: check[:trigger] || 1,
+          variable: 'show',
+          value: check[:value] || 1
+        }
+      elsif check[:power]
+        power_value, power_op = parse_operator(check[:power])
+        {
+          trigger: check[:trigger] || 1,
+          variable: 'power',
+          op: power_op,
+          value: power_value.to_s
+        }
+      elsif check[:charges]
+        charges_value, charges_op = parse_operator(check[:charges])
+        {
+          trigger: check[:trigger] || 1,
+          variable: 'charges',
+          op: charges_op,
+          value: charges_value.to_s
+        }
+      elsif check[:stacks]
+        stacks_value, stacks_op = parse_operator(check[:stacks])
+        {
+          trigger: check[:trigger] || 1,
+          variable: 'stacks',
+          op: stacks_op,
+          value: stacks_value.to_s
+        }
+      else
+        check
+      end
+    else
+      { trigger: 1, variable: 'show', value: 1 }
+    end
+  end
+
   def as_json
-    { id: "#{id} (#{@uid})",
+    { id: id,
+      uid: @uid,
       load: load,
       triggers: triggers.is_a?(Hash) ? triggers : map_triggers(triggers),
       actions: actions,

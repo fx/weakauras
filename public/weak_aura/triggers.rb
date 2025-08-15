@@ -13,6 +13,7 @@ module Trigger
     end
 
     def parse_count_operator(count, default_operator = '==')
+      return [nil, nil] if count.nil?
       return [count, default_operator] if count.is_a?(Integer)
 
       operator = count.to_s.match(/^[<>!=]+/)&.[](0) || default_operator
@@ -55,3 +56,7 @@ require_relative 'triggers/aura_remaining'
 require_relative 'triggers/auras'
 require_relative 'triggers/events'
 require_relative 'triggers/action_usable'
+require_relative 'triggers/power'
+require_relative 'triggers/runes'
+require_relative 'triggers/talent'
+require_relative 'triggers/combat_state'

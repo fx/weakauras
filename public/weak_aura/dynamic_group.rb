@@ -8,10 +8,37 @@ class WeakAura
     option :icon_width, default: 40
     option :icon_height, default: nil
 
+    def grow(direction: nil, type: nil)
+      return @grow_direction unless direction
+      
+      @grow_direction = direction.to_s.upcase
+      @grow_type = type.to_s.upcase if type
+    end
+
+    def offset(x: nil, y: nil)
+      if x || y
+        @options[:offset] = { 
+          x: x || @options[:offset][:x], 
+          y: y || @options[:offset][:y] 
+        }
+      end
+      @options[:offset]
+    end
+
     def as_json # rubocop:disable Metrics/MethodLength
+      grow_value = case @grow_direction
+                   when 'RIGHT' then 'RIGHT'
+                   when 'LEFT' then 'LEFT'
+                   when 'UP' then 'UP'
+                   when 'DOWN' then 'DOWN'
+                   when 'HORIZONTAL' then 'HORIZONTAL'
+                   when 'VERTICAL' then 'VERTICAL'
+                   else 'GRID'
+                   end
+      
       {
         anchorFrameType: 'PRD',
-        grow: 'GRID',
+        grow: grow_value,
         selfPoint: 'TOP',
         gridWidth: 4,
         columnSpace: options[:space][:x],

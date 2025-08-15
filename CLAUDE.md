@@ -66,3 +66,4 @@ WeakAuras Ruby DSL - A Next.js web application that provides a Ruby DSL for gene
 - **TypeScript/React**: Vitest with Playwright browser testing
 - **Ruby**: RSpec for DSL logic, Guard for auto-testing
 - Test files colocated with source (*.test.tsx, *_spec.rb)
+- **Important**: When testing Ruby DSL functionality, always create proper RSpec specs (e.g., `*_spec.rb` files) instead of standalone test scripts. Use `bundle exec rspec` to run tests.

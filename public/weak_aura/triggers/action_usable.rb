@@ -53,6 +53,31 @@ module Trigger
         end
       end
 
+      if options[:cooldown_remaining]
+        cooldown, cooldown_operator = parse_count_operator(options[:cooldown_remaining], '<=')
+        if cooldown
+          trigger
+            .merge!({
+                      use_remaining: true,
+                      remaining_operator: cooldown_operator,
+                      remaining: cooldown.to_s
+                    })
+        end
+      end
+
+      if options[:ready_in]
+        ready_time, ready_operator = parse_count_operator(options[:ready_in], '<=')
+        if ready_time
+          trigger[:genericShowOn] = 'showOnReady'
+          trigger
+            .merge!({
+                      use_remaining: true,
+                      remaining_operator: ready_operator,
+                      remaining: ready_time.to_s
+                    })
+        end
+      end
+
       {
         trigger: trigger
       }
