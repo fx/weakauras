@@ -98,46 +98,41 @@ module WhackAura # rubocop:disable Style/Documentation
   def power_check(power_type, value, **kwargs, &block)
     kwargs = { power_type: power_type, value: value, parent: self }.merge(kwargs)
     trigger = Trigger::Power.new(**kwargs)
-    triggers = map_triggers([trigger])
-    
-    add_node(WeakAura::Icon.new(id: "Power #{power_type.to_s.gsub('_', ' ').capitalize}", parent: self, triggers: triggers, &block))
+    @triggers << trigger
+    instance_eval(&block) if block_given?
+    self
   end
 
   def rune_check(count, **kwargs, &block)
     kwargs = { rune_count: count, parent: self }.merge(kwargs)
     trigger = Trigger::Runes.new(**kwargs)
-    triggers = map_triggers([trigger])
-    
-    add_node(WeakAura::Icon.new(id: "Runes Check", parent: self, triggers: triggers, &block))
+    @triggers << trigger
+    instance_eval(&block) if block_given?
+    self
   end
 
   def talent_active(talent_name, **kwargs, &block)
     kwargs = { talent_name: talent_name, selected: true, parent: self }.merge(kwargs)
     trigger = Trigger::Talent.new(**kwargs)
-    triggers = map_triggers([trigger])
-    
-    add_node(WeakAura::Icon.new(id: talent_name, parent: self, triggers: triggers, &block))
+    @triggers << trigger
+    instance_eval(&block) if block_given?
+    self
   end
 
   def combat_state(check_type, **kwargs, &block)
     kwargs = { check_type: check_type, parent: self }.merge(kwargs)
     trigger = Trigger::CombatState.new(**kwargs)
-    triggers = map_triggers([trigger])
-    
-    case check_type
-    when :in_combat
-      id = "In Combat"
-    when :unit_count
-      id = "Multiple Enemies"
-    else
-      id = "Combat Check"
-    end
-    
-    add_node(WeakAura::Icon.new(id: id, parent: self, triggers: triggers, &block))
+    @triggers << trigger
+    instance_eval(&block) if block_given?
+    self
   end
 
   def multi_target_rotation(unit_count: 2, &block)
-    combat_state(:unit_count, unit_count: unit_count, &block)
+    kwargs = { check_type: :unit_count, unit_count: unit_count, parent: self }
+    trigger = Trigger::CombatState.new(**kwargs)
+    @triggers << trigger
+    instance_eval(&block) if block_given?
+    self
   end
 
   def resource_pooling(power_type, threshold, &block)

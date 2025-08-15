@@ -18,6 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Build Ruby WASM**: `make pack` (bundles Ruby code with dependencies into public/ruby.wasm)
 - **Run Ruby specs**: `bundle exec rspec`
 - **Guard for auto-testing**: `bundle exec guard`
+- **Test DSL compilation**: `ruby scripts/compile-dsl.rb [file]` (see below for details)
 
 ### Linting
 - **Next.js lint**: `npm run lint`
@@ -30,6 +31,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Overview
 WeakAuras Ruby DSL - A Next.js web application that provides a Ruby DSL for generating World of Warcraft WeakAuras. Users write Ruby code in the browser which gets compiled via Ruby WASM to generate WeakAura export strings.
+
+### WeakAuras Concepts
+- **Auras**: Visual elements displayed on screen (Icon, Progress Bar, Dynamic Group, etc.)
+- **Triggers**: Conditions that control when an aura shows/hides (an aura can have multiple triggers)
+- **Conditions**: Modifiers that change aura appearance based on trigger states
+
+### DSL Design
+The Ruby DSL provides methods to:
+1. **Create Auras**: `icon`, `dynamic_group`, `action_usable` - these create actual visual elements
+2. **Add Triggers**: `power_check`, `rune_check`, `talent_active`, `combat_state` - these add trigger conditions to the current aura context
+3. **Apply Conditions**: `glow!`, `hide_ooc!` - these add conditional modifications
+
+Example:
+```ruby
+icon 'My Icon' do
+  action_usable           # Main trigger
+  power_check :mana, '>= 50'  # Additional trigger
+  glow! power: '>= 80'    # Conditional glow
+end
+```
 
 ### Key Components
 
@@ -67,3 +88,29 @@ WeakAuras Ruby DSL - A Next.js web application that provides a Ruby DSL for gene
 - **Ruby**: RSpec for DSL logic, Guard for auto-testing
 - Test files colocated with source (*.test.tsx, *_spec.rb)
 - **Important**: When testing Ruby DSL functionality, always create proper RSpec specs (e.g., `*_spec.rb` files) instead of standalone test scripts. Use `bundle exec rspec` to run tests.
+
+### DSL Compilation Testing
+**IMPORTANT**: Use the generic `scripts/compile-dsl.rb` script for testing DSL compilation. DO NOT create standalone test scripts.
+
+```bash
+# Test a DSL file
+ruby scripts/compile-dsl.rb public/examples/paladin/retribution.rb
+
+# Test with analysis output
+ruby scripts/compile-dsl.rb --analyze public/examples/test_new_triggers.rb
+
+# Test from stdin
+echo "icon 'Test'" | ruby scripts/compile-dsl.rb
+
+# Output raw JSON
+ruby scripts/compile-dsl.rb --json public/examples/paladin/retribution.rb
+
+# Get help
+ruby scripts/compile-dsl.rb --help
+```
+
+The script provides:
+- Compilation testing without server/WASM dependencies
+- JSON output (raw or pretty-printed)
+- Structure analysis showing auras, triggers, and parent-child relationships
+- Error reporting with helpful context

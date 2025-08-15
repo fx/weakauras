@@ -118,4 +118,100 @@ RSpec.describe Node do
       expect(node_two.options).to eq(foo: 'bar')
     end
   end
+
+  describe '#id' do
+    it 'generates clean IDs without UID suffixes' do
+      node = Node.new
+      node.id('Test Name')
+      expect(node.id).to eq('Test Name')
+      expect(node.id).not_to include('(')
+    end
+
+    it 'still generates a UID internally' do
+      node = Node.new
+      node.id('Test')
+      expect(node.uid).to match(/^[a-f0-9]{11}$/)
+    end
+  end
+
+  describe '#add_node' do
+    it 'adds child to children array' do
+      parent = Node.new
+      child = Node.new
+      parent.add_node(child)
+      expect(parent.children).to include(child)
+    end
+
+    it 'adds child to controlled_children' do
+      parent = Node.new
+      child = Node.new
+      parent.add_node(child)
+      expect(parent.controlled_children).to include(child)
+    end
+
+    it 'does not flatten nested children to parent' do
+      root = Node.new
+      group = Node.new
+      child = Node.new
+      
+      root.add_node(group)
+      group.add_node(child)
+      
+      expect(root.children).to contain_exactly(group)
+      expect(root.children).not_to include(child)
+    end
+  end
+
+  describe '#all_descendants' do
+    it 'recursively collects all descendants' do
+      root = Node.new
+      root.id('Root')
+      
+      group1 = Node.new
+      group1.id('Group1')
+      child1 = Node.new
+      child1.id('Child1')
+      child2 = Node.new
+      child2.id('Child2')
+      
+      group2 = Node.new
+      group2.id('Group2')
+      grandchild = Node.new
+      grandchild.id('Grandchild')
+      
+      root.add_node(group1)
+      group1.add_node(child1)
+      group1.add_node(child2)
+      root.add_node(group2)
+      group2.add_node(grandchild)
+      
+      descendants = root.all_descendants
+      descendant_ids = descendants.map(&:id)
+      
+      expect(descendant_ids).to eq(['Group1', 'Child1', 'Child2', 'Group2', 'Grandchild'])
+    end
+
+    it 'returns empty array for nodes with no children' do
+      node = Node.new
+      expect(node.all_descendants).to eq([])
+    end
+
+    it 'handles deeply nested structures' do
+      root = Node.new
+      root.id('Root')
+      
+      current = root
+      (1..5).each do |i|
+        child = Node.new
+        child.id("Level#{i}")
+        current.add_node(child)
+        current = child
+      end
+      
+      descendants = root.all_descendants
+      descendant_ids = descendants.map(&:id)
+      
+      expect(descendant_ids).to eq(['Level1', 'Level2', 'Level3', 'Level4', 'Level5'])
+    end
+  end
 end

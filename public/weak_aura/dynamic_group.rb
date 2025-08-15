@@ -111,16 +111,16 @@ class WeakAura
         internalVersion: 70,
         load: {
           size: {
-            multi: []
+            multi: {}
           },
           spec: {
-            multi: []
+            multi: {}
           },
           class: {
-            multi: []
+            multi: {}
           },
           talent: {
-            multi: []
+            multi: {}
           }
         },
         useAnchorPerUnit: false,
