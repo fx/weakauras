@@ -114,3 +114,75 @@ The script provides:
 - JSON output (raw or pretty-printed)
 - Structure analysis showing auras, triggers, and parent-child relationships
 - Error reporting with helpful context
+
+## WeakAura Import Troubleshooting
+
+### Common Import Failures
+WeakAura imports can hang or fail silently. Here are critical issues to check:
+
+#### 1. Duplicate Aura IDs
+**Problem**: WeakAuras requires unique IDs for all auras. Having duplicates causes import failures.
+```ruby
+# BAD - Creates two auras with ID "Rake"
+debuff_missing 'Rake'
+action_usable 'Rake'
+
+# GOOD - Use unique IDs
+icon 'Rake Tracker' do
+  aura 'Rake', show_on: :missing, type: 'debuff', unit: 'target'
+end
+action_usable 'Rake'
+```
+
+#### 2. Empty Condition Check Arrays
+**Problem**: Conditions with empty check arrays cause import to hang.
+```ruby
+# BAD - glow! with unhandled options creates empty check array
+glow! auras: ['Some Buff']  # If not properly implemented
+
+# GOOD - Ensure all glow! options are handled
+glow!  # Simple show-based glow
+glow! charges: '>= 2'  # Implemented charge-based glow
+```
+
+#### 3. Incorrect Spell Names in Triggers
+**Problem**: Using display names instead of actual spell names breaks triggers.
+```ruby
+# BAD - aura name becomes "Rip (Missing)" 
+debuff_missing 'Rip (Missing)'
+
+# GOOD - Use icon blocks to control ID separately from spell name
+icon 'Rip Tracker' do
+  aura 'Rip', show_on: :missing, type: 'debuff', unit: 'target'
+end
+```
+
+#### 4. DoT Tracking Pattern
+For DoTs that need to show when missing OR expiring, use icon blocks with multiple triggers:
+```ruby
+icon 'Shadow Word: Pain Tracker' do
+  # Trigger 1: Show when missing
+  aura 'Shadow Word: Pain', show_on: :missing, type: 'debuff', unit: 'target'
+  # Trigger 2: Show when expiring (< 5.4s remaining)
+  aura 'Shadow Word: Pain', show_on: :active, type: 'debuff', unit: 'target', remaining_time: 5.4
+end
+```
+Multiple triggers in an icon use OR logic by default (`disjunctive: "any"`).
+
+### Debug Logging
+To enable debug logging for successfully imported auras:
+```ruby
+title 'My WeakAura'
+load spec: :feral_druid
+debug_log!  # Adds information.debugLog = true to all auras
+```
+
+### Debugging Import Failures
+For import failures (when aura won't import at all):
+1. Enable Lua errors: `/console scriptErrors 1`
+2. Check the generated JSON for:
+   - Duplicate IDs: `jq '.c[].id' output.json | sort | uniq -d`
+   - Empty conditions: `jq '.c[] | select(.conditions) | .conditions'`
+   - Verify spell names match exactly what WoW expects
+3. Use BugSack/BugGrabber addons to capture detailed error messages
+4. Test with minimal examples to isolate the issue
