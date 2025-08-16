@@ -7,7 +7,17 @@ class WeakAura < Node # rubocop:disable Style/Documentation
   def initialize(type: nil)
     super
     @type = type
+    @debug_log_enabled = false
     extend(type) if type
+  end
+  
+  def debug_log!
+    @debug_log_enabled = true
+  end
+  
+  def information_hash
+    return [] unless @debug_log_enabled
+    { debugLog: true }
   end
 
   def as_json # rubocop:disable Metrics/MethodLength
@@ -76,7 +86,7 @@ class WeakAura < Node # rubocop:disable Style/Documentation
       subRegions: [],
       selfPoint: 'CENTER',
       conditions: conditions,
-      information: [],
+      information: information_hash,
       regionType: 'group'
     }
   end

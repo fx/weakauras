@@ -129,7 +129,7 @@ class WeakAura
           inverse: false,
           parent: parent&.id,
           conditions: conditions,
-          information: []
+          information: information_hash
         }
       )
     end

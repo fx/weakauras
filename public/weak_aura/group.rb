@@ -74,7 +74,7 @@ class WeakAura
         subRegions: [],
         selfPoint: 'CENTER',
         conditions: conditions,
-        information: [],
+        information: information_hash,
         regionType: 'group'
       }
     end

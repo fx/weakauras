@@ -280,6 +280,24 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       ]
     }
   end
+  
+  def debug_log!
+    # Pass debug_log up to the root WeakAura
+    root = self
+    root = root.parent while root.parent
+    root.debug_log! if root.respond_to?(:debug_log!)
+  end
+  
+  def information_hash
+    # Get debug log status from root WeakAura
+    root = self
+    root = root.parent while root.parent
+    if root.respond_to?(:information_hash)
+      root.information_hash
+    else
+      []
+    end
+  end
 
   def and_conditions(*checks, &block) # rubocop:disable Metrics/MethodLength
     @conditions ||= []

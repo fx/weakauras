@@ -153,7 +153,7 @@ class WeakAura
         anchorPerUnit: 'CUSTOM',
         arcLength: 360,
         conditions: conditions,
-        information: []
+        information: information_hash
       }
     end
   end
