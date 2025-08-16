@@ -211,7 +211,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     result
   end
 
-  def glow!(**options) # rubocop:disable Metrics/MethodLength
+  def glow!(**options) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity
     raise 'glow! only supports a single check, use multiple `glow!` calls for multiple checks.' if options.keys.size > 1
 
     check = []
@@ -230,6 +230,16 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
         'op' => charges_op,
         'value' => charges_value.to_s,
         'trigger' => 1
+      }
+    end
+    
+    if options[:auras]
+      # For now, just use a simple "show" check since aura-based glows need proper trigger indices
+      # This is a temporary fix - proper implementation would need to track trigger indices
+      check = {
+        trigger: 1,
+        variable: 'show',
+        value: 1
       }
     end
 
