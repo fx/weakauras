@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+begin
+  require_relative '../../data/spell_data'
+rescue LoadError
+  # Spell data not available, will use raw spell names
+end
+
 module Trigger
   class ActionUsable < Base # rubocop:disable Style/Documentation
     def initialize(**_options)
@@ -11,15 +17,29 @@ module Trigger
     end
 
     def as_json # rubocop:disable Metrics/MethodLength
+      # Try to get spell ID from spell data if available
+      spell_id = nil
+      spell_name = options[:spell]
+      
+      if spell_name.is_a?(String) && defined?(SpellData)
+        begin
+          spell_id = SpellData.spell_id(spell_name)
+        rescue => e
+          puts "Warning: Could not find spell ID for '#{spell_name}': #{e.message}"
+        end
+      elsif spell_name.is_a?(Integer)
+        spell_id = spell_name
+      end
+      
       trigger = {
         type: 'spell',
         subeventSuffix: '_CAST_START',
-        spellName: options[:spell],
+        spellName: spell_id || spell_name,
         use_exact_spellName: !!options[:exact],
         use_genericShowOn: true,
         event: 'Action Usable',
         names: [],
-        realSpellName: options[:spell_name],
+        realSpellName: options[:spell_name] || spell_name,
         use_spellName: true,
         spellIds: [],
         genericShowOn: 'showOnCooldown',
@@ -80,7 +100,7 @@ module Trigger
 
       {
         trigger: trigger,
-        untrigger: {}
+        untrigger: []
       }
     end
   end

@@ -142,6 +142,14 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   end
 
   def map_triggers(triggers)
+    # Check if any triggers are talent triggers
+    has_talent_trigger = triggers.any? { |t| t.is_a?(Trigger::Talent) }
+    
+    # If there are talent triggers, force ALL logic
+    if has_talent_trigger
+      trigger_options[:disjunctive] = 'all'
+    end
+    
     Hash[*triggers.each_with_index.to_h do |trigger, index|
            [index + 1, trigger.as_json]
          end.flatten].merge(trigger_options)

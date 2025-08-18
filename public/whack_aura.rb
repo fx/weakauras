@@ -112,7 +112,7 @@ module WhackAura # rubocop:disable Style/Documentation
   end
 
   def talent_active(talent_name, **kwargs, &block)
-    kwargs = { talent_name: talent_name, selected: true, parent: self }.merge(kwargs)
+    kwargs = { talent_name: talent_name, selected: true, parent_node: self }.merge(kwargs)
     trigger = Trigger::Talent.new(**kwargs)
     @triggers << trigger
     instance_eval(&block) if block_given?

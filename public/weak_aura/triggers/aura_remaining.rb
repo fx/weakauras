@@ -23,7 +23,7 @@ module Trigger
           names: [],
           useRem: true
         },
-        untrigger: {}
+        untrigger: []
       }
     end
   end

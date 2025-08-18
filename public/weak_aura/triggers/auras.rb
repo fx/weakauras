@@ -35,7 +35,7 @@ module Trigger
           subeventSuffix: '_CAST_START',
           subeventPrefix: 'SPELL'
         },
-        untrigger: {}
+        untrigger: []
       }
 
       rem, rem_operator = parse_count_operator(options[:remaining_time], '<=')
