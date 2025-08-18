@@ -15,7 +15,7 @@ module Trigger
           debuffType: 'HELPFUL',
           unit: 'player'
         },
-        untrigger: []
+        untrigger: {}
       }
     end
   end

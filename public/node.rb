@@ -72,7 +72,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       disjunctive: 'any',
       activeTriggerMode: -10
     }
-    @actions = actions
+    @actions = actions || { start: [], init: [], finish: [] }
     @conditions = []
     @type = type
     @options = self.class.options.dup || {}
@@ -143,7 +143,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
 
   def map_triggers(triggers)
     Hash[*triggers.each_with_index.to_h do |trigger, index|
-           [(index + 1).to_s, trigger.as_json]
+           [index + 1, trigger.as_json]
          end.flatten].merge(trigger_options)
   end
 
@@ -211,7 +211,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     result
   end
 
-  def glow!(**options) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity
+  def glow!(**options) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
     raise 'glow! only supports a single check, use multiple `glow!` calls for multiple checks.' if options.keys.size > 1
 
     check = []
@@ -234,13 +234,64 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     end
     
     if options[:auras]
-      # For now, just use a simple "show" check since aura-based glows need proper trigger indices
-      # This is a temporary fix - proper implementation would need to track trigger indices
-      check = {
-        trigger: 1,
-        variable: 'show',
-        value: 1
-      }
+      # Add aura triggers for each specified aura and create condition checks
+      aura_names = options[:auras]
+      aura_names = [aura_names] unless aura_names.is_a?(Array)
+      
+      # If triggers is already a Hash (from action_usable), we need to add to it differently
+      if triggers.is_a?(Hash)
+        # Find the next available trigger index
+        next_index = triggers.keys.select { |k| k.to_s.match?(/^\d+$/) }.map(&:to_i).max + 1
+        
+        trigger_indices = []
+        aura_names.each do |aura_name|
+          # Add new aura trigger to the hash
+          trigger = Trigger::Auras.new(aura_names: aura_name, show_on: :active)
+          triggers[next_index.to_s] = trigger.as_json
+          trigger_indices << next_index
+          next_index += 1
+        end
+      else
+        # triggers is an Array - handle as before
+        trigger_indices = []
+        aura_names.each do |aura_name|
+          # Check if we already have a trigger for this aura
+          existing_index = triggers.find_index do |t|
+            t.respond_to?(:aura_names) && t.aura_names.include?(aura_name) && t.show_on == :active
+          end
+          
+          if existing_index
+            trigger_indices << existing_index + 1
+          else
+            # Add new aura trigger
+            trigger = Trigger::Auras.new(aura_names: aura_name, show_on: :active)
+            triggers << trigger
+            trigger_indices << triggers.size
+          end
+        end
+      end
+      
+      # Create condition checks for each aura trigger
+      if trigger_indices.size == 1
+        check = {
+          trigger: trigger_indices.first,
+          variable: 'show',
+          value: 1
+        }
+      else
+        # Multiple auras - use OR logic
+        checks = trigger_indices.map do |idx|
+          {
+            trigger: idx,
+            variable: 'show',
+            value: 1
+          }
+        end
+        check = {
+          checks: checks,
+          combine_type: 'or'
+        }
+      end
     end
 
     @conditions ||= []

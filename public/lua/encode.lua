@@ -99,3 +99,21 @@ function decode(str)
 
     return json.encode(deserialized)
 end
+
+function generateLuaTable(input)
+    local t = json.decode(input)
+    if not t or not t.d then
+        return "error: invalid input"
+    end
+
+    t.d = fixWATables(t.d)
+    if t.c then
+        for i = 1, #t.c do
+            if t.c[i] then
+                t.c[i] = fixWATables(t.c[i])
+            end
+        end
+    end
+
+    return inspect(t)
+end

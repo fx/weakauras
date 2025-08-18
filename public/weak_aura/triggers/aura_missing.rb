@@ -14,7 +14,7 @@ module Trigger
           type: 'aura2',
           debuffType: 'HELPFUL'
         },
-        untrigger: []
+        untrigger: {}
       }
     end
   end

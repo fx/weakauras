@@ -33,7 +33,7 @@ module Trigger
             names: [],
             debuffType: 'HELPFUL'
           },
-          untrigger: []
+          untrigger: {}
         }
       when :unit_count
         {
@@ -46,7 +46,7 @@ module Trigger
             debuffType: 'HELPFUL',
             unit: 'player'
           },
-          untrigger: []
+          untrigger: {}
         }
       when :nameplate_count
         {
@@ -63,7 +63,7 @@ module Trigger
             names: [],
             debuffType: 'HELPFUL'
           },
-          untrigger: []
+          untrigger: {}
         }
       end
     end

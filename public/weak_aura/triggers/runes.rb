@@ -31,7 +31,7 @@ module Trigger
           names: [],
           debuffType: 'HELPFUL'
         },
-        untrigger: []
+        untrigger: {}
       }
     end
   end

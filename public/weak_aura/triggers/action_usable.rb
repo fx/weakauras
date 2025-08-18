@@ -79,7 +79,8 @@ module Trigger
       end
 
       {
-        trigger: trigger
+        trigger: trigger,
+        untrigger: {}
       }
     end
   end
