@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Build Ruby WASM**: `make pack` (bundles Ruby code with dependencies into public/ruby.wasm)
 - **Run Ruby specs**: `bundle exec rspec`
 - **Guard for auto-testing**: `bundle exec guard`
-- **Test DSL compilation**: `ruby scripts/compile-dsl.rb [file]` (see below for details)
+- **Test DSL compilation**: `npm run compile-dsl [file]` or `ruby scripts/compile-dsl.rb [file]` (see below for details)
 
 ### Linting
 - **Next.js lint**: `npm run lint`
@@ -26,6 +26,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### WeakAura Encoding
 - **Encode WeakAura JSON to export string**: `echo '{"d": "test"}' | npm run encode`
+- **Build complete WeakAura from DSL**: `npm run build-wa path/to/file.rb` (full pipeline: DSL → JSON → WA string)
+
+### Spell/Talent Data Management
+- **Parse SimC spell data**: `npm run parse-simc` (generates JSON from ./simc/SpellDataDump/)
+- **Build Ruby mappings**: `npm run build-mappings` (generates Ruby modules from JSON)
+- **Update all spell data**: `npm run update-spell-data` (runs both parse and build steps)
+
+The spell data system uses a two-stage process:
+1. `ruby scripts/parse_simc_data.rb` - Parses SimC txt files into JSON data files
+2. `ruby scripts/build_spell_mappings.rb` - Generates Ruby modules from JSON data
+
+This allows talent names like "Primal Wrath" to be automatically converted to numeric IDs (285381) for proper WeakAura imports.
 
 ## Architecture
 
