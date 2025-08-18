@@ -11,7 +11,13 @@
     "lint": "next lint",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
-    "encode": "ts-node public/lua/encode.ts"
+    "encode": "ts-node public/lua/encode-wa.ts",
+    "generate-lua": "ts-node public/lua/generate-lua.ts",
+    "parse-simc": "ruby scripts/parse_simc_data.rb",
+    "build-mappings": "ruby scripts/build_spell_mappings.rb",
+    "update-spell-data": "npm run parse-simc && npm run build-mappings",
+    "compile-dsl": "ruby scripts/compile-dsl.rb",
+    "build-wa": "scripts/build-wa.sh"
   },
   "repository": {
     "type": "git",
