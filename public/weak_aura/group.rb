@@ -39,7 +39,7 @@ class WeakAura
               event: 'Health',
               debuffType: 'HELPFUL'
             },
-            untrigger: []
+            untrigger: {}
           }
         ],
         animation: {

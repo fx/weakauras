@@ -51,7 +51,7 @@ class WeakAura < Node # rubocop:disable Style/Documentation
             event: 'Health',
             debuffType: 'HELPFUL'
           },
-          untrigger: []
+          untrigger: {}
         }
       ],
       animation: {

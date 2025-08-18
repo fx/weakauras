@@ -67,8 +67,8 @@ class WeakAura
           init: [],
           finish: []
         },
-        triggers: [
-          {
+        triggers: {
+          1 => {
             trigger: {
               subeventPrefix: 'SPELL',
               type: 'aura2',
@@ -79,9 +79,11 @@ class WeakAura
               event: 'Health',
               debuffType: 'HELPFUL'
             },
-            untrigger: []
-          }
-        ],
+            untrigger: {}
+          },
+          disjunctive: "any",
+          activeTriggerMode: -10
+        },
         radius: 200,
         useLimit: false,
         align: 'CENTER',
