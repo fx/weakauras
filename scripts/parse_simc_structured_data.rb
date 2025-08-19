@@ -133,7 +133,7 @@ class SimCStructuredParser
         id = match[1].to_i
         description = match[2]
         descriptions[id] = {
-          description: clean_description(description),
+          description: clean_description(description, id),
           tooltip: ""
         }
       # Match: {   17, "description", "tooltip", 0 },  
@@ -142,8 +142,8 @@ class SimCStructuredParser
         description = match[2]
         tooltip = match[3]
         descriptions[id] = {
-          description: clean_description(description),
-          tooltip: clean_description(tooltip)
+          description: clean_description(description, id),
+          tooltip: clean_description(tooltip, id)
         }
       end
     end
@@ -151,8 +151,11 @@ class SimCStructuredParser
     descriptions
   end
 
-  def clean_description(desc)
+  def clean_description(desc, spell_id = nil)
     return "" if desc.nil? || desc.empty?
+    
+    # Extract key requirements from original description BEFORE cleaning variables
+    requirements = extract_requirements_from_description(desc, spell_id)
     
     # Remove SimC formatting codes and variables
     cleaned = desc.gsub(/\$[a-zA-Z0-9<>{}\/\\\-\[\];:?]+/, '')
@@ -162,18 +165,29 @@ class SimCStructuredParser
                   .gsub(/\s+/, ' ')
                   .strip
     
-    # Extract key requirements
-    requirements = extract_requirements_from_description(cleaned)
-    
     { text: cleaned, requirements: requirements }
   end
 
-  def extract_requirements_from_description(desc)
+  def extract_requirements_from_description(desc, spell_id = nil)
     requirements = []
     
-    # Health requirements
-    if match = desc.match(/(?:less than|below)\s+(\d+)%\s+health/i)
-      requirements << "<#{match[1]}% HP"
+    # Health requirements - handle both literal numbers and variable placeholders
+    if match = desc.match(/(?:less than|below)\s+(?:(\d+)|(\$s?\d*))%\s+health/i)
+      if match[1]
+        requirements << "<#{match[1]}% HP"
+      elsif match[2]
+        # Variable placeholder - look up common values by spell ID
+        case spell_id
+        when 320976, 53351  # Kill Shot variants
+          requirements << "<20% HP"
+        when 5308, 163201, 260798  # Execute variants
+          requirements << "<20% HP"
+        when 24275, 326730  # Hammer of Wrath variants
+          requirements << "<20% HP"
+        else
+          requirements << "<X% HP"
+        end
+      end
     end
     
     # Resource requirements
