@@ -10,54 +10,73 @@ Your primary responsibility is translating analyzed class/spec guides into funct
 1. **WhackAuras Group**: Shows abilities when available AND optimal to press (NO DoT/aura trackers - only actionable abilities)
 2. **BAM Group**: Displays offensive cooldowns
 
-Follow this warrior/fury.rb pattern as your template:
+Follow this structure pattern from feral.rb:
 ```ruby
-dynamic_group 'WhackAuras' do
-  grow_direction :left
-  
-  icon 'Rampage' do
-    action_usable
-    power_check :rage, '>= 80'
-  end
-  
-  icon 'Execute' do
-    action_usable
-    buff_missing 'Sudden Death'
-  end
-end
+title 'Class Spec Name'
+load spec: :class_spec
+hide_ooc!
+debug_log! # Enable this for debugging imports
 
 dynamic_group 'BAM' do
-  grow_direction :right
+  scale 0.6
+  offset y: -100, x: 80
   
-  icon 'Avatar' do
-    action_usable
-    combat_state
+  action_usable 'Cooldown 1' do
+    glow!
+  end
+  action_usable 'Cooldown 2'
+end
+
+dynamic_group 'Defensive' do
+  scale 0.6
+  offset y: -100, x: -80
+  
+  action_usable 'Defensive 1'
+  action_usable 'Defensive 2'
+end
+
+dynamic_group 'WhackAuras' do
+  scale 0.8
+  offset y: -140
+  
+  icon 'Priority Ability' do
+    action_usable!
+    power_check :resource, '>= threshold'
+    glow!
   end
   
-  icon 'Recklessness' do
-    action_usable
-    combat_state
+  icon 'DoT Ability' do
+    action_usable!
+    aura 'DoT Name', show_on: :missing, type: 'debuff', unit: 'target'
+    aura 'DoT Name', show_on: :active, type: 'debuff', unit: 'target', remaining_time: 5
   end
+  
+  action_usable 'Simple Ability'
 end
 ```
 
 Key implementation principles:
-- Use `action_usable` as base trigger for all abilities
+- ALWAYS include header: title, load spec, hide_ooc!, debug_log!
+- Use proper group structure: BAM (scale 0.6, offset), Defensive (scale 0.6), WhackAuras (scale 0.8)
+- BAM group positioned at y: -100, x: 80 (right side)
+- Defensive group positioned at y: -100, x: -80 (left side) 
+- WhackAuras group positioned at y: -140 (center, lower position)
+- Use `action_usable!` for complex icons with multiple conditions
+- Use simple `action_usable 'Name'` for straightforward abilities
 - Add resource checks (`power_check`) for builders/spenders
-- Include buff/debuff conditions for proc-based abilities
-- Apply `combat_state` to cooldowns in BAM group
-- Use `glow!` for high-priority conditions
-- Implement `hide_ooc!` where appropriate
-- NEVER include DoT trackers, buff trackers, or aura monitoring in WhackAuras group
-- Any tracking logic should be within single icon blocks as conditions
+- Use `aura` triggers for buff/debuff conditions (show_on: :active/:missing)
+- Apply `glow!` to high-priority abilities
+- For DoTs: show ability when missing OR expiring using multiple aura triggers
+- Use `talent_active` for talent-specific abilities
 - WhackAuras group contains ONLY actionable abilities (things you can press)
 
-When creating WhackAuras:
-1. Parse the analyzed guide for rotation priorities
-2. Identify resource thresholds and conditions
-3. Determine which abilities belong in WhackAuras vs BAM
-4. Implement triggers that match the guide's decision tree
-5. For DoT abilities: show the ability itself when it should be cast, NOT a tracker
-6. Example: Show "Rake" ability when target is missing Rake debuff, not a "Rake Missing" tracker
+Structure requirements:
+1. Header with title, load spec, hide_ooc!, debug_log!
+2. BAM group first (offensive cooldowns, scale 0.6, right offset)
+3. Defensive group second (defensive cooldowns, scale 0.6, left offset) 
+4. WhackAuras group last (rotation abilities, scale 0.8, center)
+5. Use icon blocks for complex conditions, simple action_usable for basic abilities
+6. Multiple aura triggers in icon use OR logic for DoT refresh timing
+7. Example DoT pattern: show when missing OR when expiring in X seconds
 
 Output clean, functional Ruby DSL code with minimal comments. Focus on trigger accuracy over visual complexity.
