@@ -6,6 +6,18 @@ rescue LoadError
   # Spell data not available, will use raw talent names
 end
 
+begin
+  require_relative '../../data/class_spec_mappings'
+rescue LoadError
+  # Class spec mappings not available, will use hardcoded fallback
+end
+
+begin
+  require_relative '../../data/talent_choice_mappings'
+rescue LoadError
+  # Talent choice mappings not available, will use simple mapping
+end
+
 module Trigger
   class Talent < Base # rubocop:disable Style/Documentation
     def initialize(**options)
@@ -43,23 +55,36 @@ module Trigger
         if root.respond_to?(:load) && root.load && root.load[:class_and_spec]
           wow_spec_id = root.load[:class_and_spec][:single]
           
-          # Convert WOW spec ID to internal spec index
-          case wow_spec_id
-          when 102 then spec_id = 1; class_name = "DRUID"  # Balance
-          when 103 then spec_id = 2; class_name = "DRUID"  # Feral
-          when 104 then spec_id = 3; class_name = "DRUID"  # Guardian
-          when 105 then spec_id = 4; class_name = "DRUID"  # Restoration
-          # Add other classes as needed
+          # Use dynamic class/spec mapping
+          if defined?(ClassSpecMappings)
+            mapping = ClassSpecMappings.wa_class_and_spec(wow_spec_id)
+            if mapping
+              spec_id = mapping[:spec]
+              class_name = mapping[:class]
+            end
           end
         end
       end
       
-      # Build talent multi hash - include both trait ID and spell ID for Primal Wrath
-      talent_multi = { @talent_id.to_s => true }
+      # Build talent multi hash - set the talent to the selected value
+      talent_multi = { @talent_id.to_s => @options[:selected] }
       
       # For Primal Wrath, also include the trait ID 103184
       if @options[:talent_name] == 'Primal Wrath'
-        talent_multi["103184"] = true
+        talent_multi["103184"] = @options[:selected]
+      end
+      
+      # For talents with multiple choices, include all choice options
+      if defined?(TalentChoiceMappings)
+        choice_group = TalentChoiceMappings.choice_group_for_talent(@options[:talent_name])
+        if choice_group && choice_group.length > 1
+          choice_group.each do |trait_id|
+            # Set all choice options to the same value as what we want for the selected talent
+            # For "not selected" checks, all choices should be false
+            # For "selected" checks, only the target choice should be true
+            talent_multi[trait_id.to_s] = @options[:selected]
+          end
+        end
       end
 
       trigger_data = {

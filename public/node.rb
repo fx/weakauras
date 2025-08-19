@@ -105,6 +105,10 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     @id = value
   end
 
+  def all_triggers!
+    trigger_options.merge!({ disjunctive: 'all' })
+  end
+
   alias name id
   alias title id
 

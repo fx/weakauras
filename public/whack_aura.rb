@@ -138,4 +138,22 @@ module WhackAura # rubocop:disable Style/Documentation
   def resource_pooling(power_type, threshold, &block)
     power_check(power_type, ">= #{threshold}", &block)
   end
+
+  def weakaura(aura_name, active: true, **kwargs, &block)
+    status = active ? :active : :inactive
+    kwargs = { aura_name: aura_name, status: status, parent_node: self }.merge(kwargs)
+    trigger = Trigger::AuraStatus.new(**kwargs)
+    @triggers << trigger
+    instance_eval(&block) if block_given?
+    self
+  end
+
+  def weakaura_inactive(aura_name, **kwargs, &block)
+    weakaura(aura_name, active: false, **kwargs, &block)
+  end
+
+  def weakaura_active(aura_name, **kwargs, &block)
+    weakaura(aura_name, active: true, **kwargs, &block)
+  end
+
 end
