@@ -80,8 +80,7 @@ function decode(str)
         encoded, encodeVersion = str:gsub("^%!", "")
     end
     if encodeVersion ~= 2 then
-        print('We only support WA2 encoding')
-        return ''
+        return json.encode({error = "We only support WA2 encoding, got version: " .. tostring(encodeVersion)})
     end
 
     decoded = LibDeflate:DecodeForPrint(encoded)
@@ -93,8 +92,7 @@ function decode(str)
 
     success, deserialized = LibSerialize:Deserialize(decompressed)
     if not (success) then
-        print("Error deserializing: " .. encodeVersion .. deserialized)
-        return json.encode('{"error": "Could not deserialize the input."}')
+        return json.encode('{"error": "Could not deserialize the input: ' .. tostring(deserialized) .. '"}')
     end
 
     return json.encode(deserialized)

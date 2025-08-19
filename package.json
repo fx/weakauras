@@ -12,6 +12,7 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "encode": "ts-node public/lua/encode-wa.ts",
+    "decode": "ts-node --transpileOnly public/lua/decode-wa.ts",
     "generate-lua": "ts-node public/lua/generate-lua.ts",
     "parse-simc": "ruby scripts/parse_simc_data.rb",
     "build-mappings": "ruby scripts/build_spell_mappings.rb",
