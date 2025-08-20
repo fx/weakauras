@@ -81,7 +81,31 @@ class SimCParser
         spell_name = spell_match[1]
         spell_id = spell_match[2].to_i
         
-        spells[spell_name] = spell_id
+        # Handle duplicate spell names: prefer base spells over talent/spec variants
+        if spells[spell_name]
+          existing_id = spells[spell_name]
+          # Prefer the spell ID that's more likely to be the base player ability:
+          # 1. Lower IDs are generally older/more basic spells
+          # 2. IDs > 300000 are often newer talent/spec variants 
+          # 3. Some exceptions for very high base spell IDs
+          should_replace = false
+          
+          if spell_id < existing_id
+            # New ID is lower - likely more basic
+            should_replace = true
+          elsif existing_id > 300000 && spell_id < 300000
+            # Replace high-ID variant with lower-ID base spell
+            should_replace = true
+          elsif existing_id > 400000 && spell_id > 50000 && spell_id < 400000
+            # Replace very high variants with mid-range spells
+            should_replace = true
+          end
+          
+          spells[spell_name] = spell_id if should_replace
+        else
+          spells[spell_name] = spell_id
+        end
+        
         current_spell = { name: spell_name, id: spell_id }
         next
       end
