@@ -13,6 +13,13 @@
 #   echo "icon 'Test'" | ruby scripts/compile-dsl.rb
 #   ruby scripts/compile-dsl.rb --analyze public/examples/test_new_triggers.rb
 
+# Ensure bundler gems are available in CI environments
+begin
+  require 'bundler/setup'
+rescue LoadError
+  # Bundler not available, try to continue
+end
+
 require 'digest/sha1'
 require 'json'
 require 'optparse'
