@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'casting'
+require 'digest'
+require 'json'
+
 TOC_VERSION = 110_002
 
 WOW_SPECS = {
