@@ -359,9 +359,9 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     return if check.is_a?(Array) && check.empty?
     
     @conditions ||= []
-    # Ensure check is wrapped in checks array if it's a single check
-    condition_checks = if check.is_a?(Hash) && !check.key?(:checks)
-                         { checks: [check] }
+    # Ensure check is wrapped properly
+    condition_checks = if check.is_a?(Hash) && !check.key?(:checks) && !check.key?('checks')
+                         { check: check }
                        else
                          { check: check }
                        end
@@ -423,8 +423,8 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     # Get debug log status from root WeakAura
     root = self
     root = root.parent while root.parent
-    if root.respond_to?(:information_hash)
-      root.information_hash
+    if root.respond_to?(:debug_log_enabled) && root.debug_log_enabled
+      { debugLog: true }
     else
       []
     end

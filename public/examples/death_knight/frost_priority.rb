@@ -29,13 +29,9 @@ dynamic_group 'Priority Rotation' do
     end
   end
   
-  # Frost Strike shows only when Obliterate WeakAura is NOT showing
-  # This creates a priority system where Obliterate takes precedence
+  # Frost Strike shows when usable
   icon 'Frost Strike' do
     action_usable!
-    when_aura_inactive 'Obliterate' do
-      power_check :runic_power, '>= 25'
-    end
   end
   
   # Other abilities that don't depend on the priority system
