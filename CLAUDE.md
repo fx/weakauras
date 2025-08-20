@@ -29,15 +29,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Build complete WeakAura from DSL**: `npm run build-wa path/to/file.rb` (full pipeline: DSL → JSON → WA string)
 
 ### Spell/Talent Data Management
-- **Parse SimC spell data**: `npm run parse-simc` (generates JSON from ./simc/SpellDataDump/)
+- **Parse SimC spell data**: `npm run parse-simc` (generates JSON from ./simc/engine/dbc/generated/)
 - **Build Ruby mappings**: `npm run build-mappings` (generates Ruby modules from JSON)
 - **Update all spell data**: `npm run update-spell-data` (runs both parse and build steps)
 
 The spell data system uses a two-stage process:
-1. `ruby scripts/parse_simc_data.rb` - Parses SimC txt files into JSON data files
+1. `ruby scripts/parse_simc_data.rb` - Parses SimC structured DBC data files (.inc) into JSON data files
 2. `ruby scripts/build_spell_mappings.rb` - Generates Ruby modules from JSON data
 
 This allows talent names like "Primal Wrath" to be automatically converted to numeric IDs (285381) for proper WeakAura imports.
+
+**Data Sources**: Uses SimC's structured DBC data from `/simc/engine/dbc/generated/` which contains:
+- `sc_spell_data.inc` - Complete spell database with current game data
+- `sc_talent_data.inc` - Talent tree and choice data  
+- `covenant_data.inc` - Covenant ability data (shows removal status)
+- Files with `_ptr.inc` suffix contain PTR/beta data
 
 ## Architecture
 
