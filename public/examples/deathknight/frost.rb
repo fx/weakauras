@@ -4,18 +4,26 @@ hide_ooc!
 debug_log!
 
 dynamic_group 'BAM' do
-  scale 0.6
-  offset y: -100, x: 80
+  scale 0.8
+  offset y: 340, x: 0
   
-  action_usable 'Pillar of Frost' do
+  icon 'Pillar of Frost' do
+    action_usable! cooldown_remaining: '<= 15'
     glow!
   end
-  action_usable "Frostwyrm's Fury" do
+  icon "Frostwyrm's Fury" do
+    action_usable! cooldown_remaining: '<= 15'
     glow!
   end
-  action_usable 'Breath of Sindragosa'
-  action_usable 'Soul Reaper'
-  action_usable 'Abomination Limb'
+  icon 'Breath of Sindragosa' do
+    action_usable! cooldown_remaining: '<= 15'
+  end
+  icon 'Soul Reaper' do
+    action_usable! cooldown_remaining: '<= 15'
+  end
+  icon 'Abomination Limb' do
+    action_usable! cooldown_remaining: '<= 15'
+  end
 end
 
 dynamic_group 'Defensive' do
@@ -42,7 +50,7 @@ dynamic_group 'WhackAuras' do
   icon 'Obliterate' do
     action_usable! spell: 'Obliterate'
     aura 'Killing Machine', show_on: :active, type: 'buff', stacks: '>= 1'
-    glow! stacks: { 'Killing Machine' => '>= 2' }
+    glow!  # Simple glow when Killing Machine is active
   end
   
   icon 'Howling Blast' do
