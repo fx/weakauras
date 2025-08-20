@@ -101,7 +101,9 @@ class SimCSpellValidator
 
     spell_data = {}
     # Parse spell data structure based on SimC DBC format
-    # Format: { "name", id, school, power_cost1, power_cost2, power_cost3, flags1, flags2, proc_chance, proc_flags, proc_charges, procs_per_minute, duration_index, range_index, min_range, max_range, cooldown, gcd, charge_cooldown, category_cooldown, charges, ... }
+    # Only a subset of fields from sc_spell_data.inc are parsed below:
+    # { "Name", id, class_mask, school_mask, speed, missile_speed, ..., spell_level, ..., min_range, max_range, cooldown, gcd, category_cooldown, ..., charges, charge_cooldown, ... }
+    # See field mapping in spell_info below. Unused fields are ignored.
     File.read(dbc_file).scan(/\{\s*"([^"]+)"\s*,\s*(\d+),\s*(\d+),\s*[\d.]+,\s*[\d.]+,\s*[\d.]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*(\d+\.?\d*),\s*(\d+\.?\d*),\s*(\d+),\s*(\d+),\s*(\d+),\s*[^,]+,\s*(\d+),\s*(\d+)/) do |match|
       name, spell_id, school, min_range, max_range, cooldown, gcd, charge_cooldown, charges = match
       

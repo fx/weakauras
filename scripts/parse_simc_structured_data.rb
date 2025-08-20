@@ -82,7 +82,7 @@ class SimCStructuredParser
       fields = data_fields.split(',').map(&:strip)
       
       # Only a subset of fields from sc_spell_data.inc are parsed below:
-      # { "Name", id, class_mask, school_mask, speed, missile_speed, ..., spell_level, ..., min_range, max_range, cooldown, gcd, category_cooldown, ..., charges, charge_cooldown, ..., duration, max_duration, ... }
+      # { "Name", id, class_mask, school_mask, speed, missile_speed, ..., spell_level, ..., min_range, max_range, cooldown, gcd, category_cooldown, ..., charges, charge_cooldown, charge_category_cooldown, ..., duration, max_duration, ... }
       # See field mapping in spell_info below. Unused fields are ignored.
       
       spell_info = {
