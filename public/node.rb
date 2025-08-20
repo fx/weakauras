@@ -227,6 +227,15 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     raise 'glow! only supports a single check, use multiple `glow!` calls for multiple checks.' if options.keys.size > 1
 
     check = []
+    
+    # Ensure we have access to triggers - for icons/nodes with triggers
+    triggers_data = if respond_to?(:triggers) && !triggers.nil?
+                      triggers
+                    elsif respond_to?(:as_json) && as_json.is_a?(Hash) && as_json['triggers']
+                      as_json['triggers']
+                    else
+                      nil
+                    end
     if options.empty?
       check = {
         trigger: 1,
@@ -245,13 +254,53 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       }
     end
     
+    if options[:stacks]
+      # Handle stacks condition for glowing based on buff/debuff stacks
+      stacks_hash = options[:stacks]
+      if stacks_hash.is_a?(Hash) && triggers_data
+        aura_name = stacks_hash.keys.first
+        stack_condition = stacks_hash[aura_name]
+        
+        # Find the trigger index for this aura
+        trigger_index = if triggers_data.is_a?(Hash)
+                          # For hash-based triggers, find by checking aura names in the trigger hash
+                          result = triggers_data.find do |k, v| 
+                            next unless k.to_s.match?(/^\d+$/) && v.is_a?(Hash) && v['trigger']
+                            trigger_data = v['trigger']
+                            trigger_data['auranames']&.include?(aura_name) || 
+                            trigger_data['aura_names']&.include?(aura_name)
+                          end
+                          result&.first&.to_i
+                        else
+                          # For array-based triggers
+                          triggers_data.find_index { |t| t.respond_to?(:aura_names) && t.aura_names.include?(aura_name) }
+                        end
+        
+        if trigger_index && trigger_index > 0
+          # For hash-based triggers, use the string key directly
+          # For array-based triggers, add 1 for 1-based indexing
+          trigger_ref = triggers_data.is_a?(Hash) ? trigger_index : trigger_index + 1
+          stack_value, stack_op = parse_operator(stack_condition)
+          check = {
+            'variable' => 'stacks',
+            'op' => stack_op,
+            'value' => stack_value.to_s,
+            'trigger' => trigger_ref
+          }
+        else
+          # If no matching trigger found, create empty check to avoid errors
+          check = []
+        end
+      end
+    end
+    
     if options[:auras]
       # Add aura triggers for each specified aura and create condition checks
       aura_names = options[:auras]
       aura_names = [aura_names] unless aura_names.is_a?(Array)
       
       # If triggers is already a Hash (from action_usable), we need to add to it differently
-      if triggers.is_a?(Hash)
+      if triggers_data && triggers_data.is_a?(Hash)
         # Find the next available trigger index
         next_index = triggers.keys.select { |k| k.to_s.match?(/^\d+$/) }.map(&:to_i).max + 1
         
@@ -306,16 +355,25 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       end
     end
 
+    # Don't add condition if check is empty
+    return if check.is_a?(Array) && check.empty?
+    
     @conditions ||= []
-    @conditions << {
-      check: check,
+    # Ensure check is wrapped in checks array if it's a single check
+    condition_checks = if check.is_a?(Hash) && !check.key?(:checks)
+                         { checks: [check] }
+                       else
+                         { check: check }
+                       end
+    
+    @conditions << condition_checks.merge(
       changes: [
         {
           value: true,
           property: 'sub.3.glow'
         }
       ]
-    }
+    )
   end
 
   def aura(name, **options, &block)
