@@ -20,6 +20,11 @@ end
 
 module Trigger
   class Talent < Base # rubocop:disable Style/Documentation
+    # Extra trait IDs that need to be included for specific talents
+    EXTRA_TRAIT_IDS_FOR_TALENTS = {
+      'Primal Wrath' => ['103184']
+    }.freeze
+    
     def initialize(**options)
       super
       @options = {
@@ -69,9 +74,11 @@ module Trigger
       # Build talent multi hash - set the talent to the selected value
       talent_multi = { @talent_id.to_s => @options[:selected] }
       
-      # For Primal Wrath, also include the trait ID 103184
-      if @options[:talent_name] == 'Primal Wrath'
-        talent_multi["103184"] = @options[:selected]
+      # Include any extra trait IDs for this talent from the mapping
+      if EXTRA_TRAIT_IDS_FOR_TALENTS.key?(@options[:talent_name])
+        EXTRA_TRAIT_IDS_FOR_TALENTS[@options[:talent_name]].each do |trait_id|
+          talent_multi[trait_id.to_s] = @options[:selected]
+        end
       end
       
       # For talents with multiple choices, include all choice options

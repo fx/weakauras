@@ -19,6 +19,8 @@ require 'optparse'
 
 # SimC profile-based spell validation using class rotation data and DBC spell data
 class SimCSpellValidator
+  @@cached_spell_data = nil
+  
   def initialize(source_name)
     @source_name = source_name
     @class_name = nil
@@ -77,11 +79,22 @@ class SimCSpellValidator
   private
 
   def load_spell_data
+    # Use cached spell data if available
+    if @@cached_spell_data
+      @spell_data = @@cached_spell_data
+      return
+    end
+
     dbc_file = '/workspace/simc/engine/dbc/generated/sc_spell_data.inc'
-    return unless File.exist?(dbc_file)
-    
+    unless File.exist?(dbc_file)
+      @spell_data = {}
+      @@cached_spell_data = @spell_data
+      return
+    end
+
+    spell_data = {}
     # Parse spell data structure based on SimC DBC format
-    # Format: { "name", id, school, power_cost1, power_cost2, power_cost3, flags1, flags2, proc_chance, proc_flags, proc_charges, procs_per_minute, duration_index, range_index, min_range, max_range, cooldown, gcd, charge_cooldown, category_cooldown, charge_category_cooldown, charges, ... }
+    # Format: { "name", id, school, power_cost1, power_cost2, power_cost3, flags1, flags2, proc_chance, proc_flags, proc_charges, procs_per_minute, duration_index, range_index, min_range, max_range, cooldown, gcd, charge_cooldown, category_cooldown, charges, ... }
     File.read(dbc_file).scan(/\{\s*"([^"]+)"\s*,\s*(\d+),\s*(\d+),\s*[\d.]+,\s*[\d.]+,\s*[\d.]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*(\d+\.?\d*),\s*(\d+\.?\d*),\s*(\d+),\s*(\d+),\s*(\d+),\s*[^,]+,\s*(\d+),\s*(\d+)/) do |match|
       name, spell_id, school, min_range, max_range, cooldown, gcd, charge_cooldown, charges = match
       
@@ -89,9 +102,9 @@ class SimCSpellValidator
       
       # Prefer entries with actual cooldowns over placeholders (0 cooldown)
       # If we already have this spell and it has a cooldown, only replace if new one has better data
-      existing = @spell_data[spell_key]
+      existing = spell_data[spell_key]
       if !existing || (existing[:cooldown] == 0 && cooldown.to_i > 0) || (existing[:charges] == 0 && charges.to_i > 0)
-        @spell_data[spell_key] = {
+        spell_data[spell_key] = {
           name: name,
           id: spell_id.to_i,
           school: school.to_i,
@@ -104,6 +117,9 @@ class SimCSpellValidator
         }
       end
     end
+    
+    @spell_data = spell_data
+    @@cached_spell_data = spell_data
   end
 
   def extract_class_from_source_name

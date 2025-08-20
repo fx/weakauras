@@ -227,19 +227,25 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     result
   end
 
+  private
+  
+  def get_triggers_data
+    if respond_to?(:triggers) && !triggers.nil?
+      triggers
+    elsif respond_to?(:as_json) && as_json.is_a?(Hash) && as_json['triggers']
+      as_json['triggers']
+    else
+      nil
+    end
+  end
+  
+  public
+  
   def glow!(**options) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
     raise 'glow! only supports a single check, use multiple `glow!` calls for multiple checks.' if options.keys.size > 1
 
     check = []
-    
-    # Ensure we have access to triggers - for icons/nodes with triggers
-    triggers_data = if respond_to?(:triggers) && !triggers.nil?
-                      triggers
-                    elsif respond_to?(:as_json) && as_json.is_a?(Hash) && as_json['triggers']
-                      as_json['triggers']
-                    else
-                      nil
-                    end
+    triggers_data = get_triggers_data
     if options.empty?
       check = {
         trigger: 1,

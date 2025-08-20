@@ -81,9 +81,9 @@ class SimCStructuredParser
       # Parse the numeric fields
       fields = data_fields.split(',').map(&:strip)
       
-      # Looking at the actual structure from sc_spell_data.inc:
-      # { "Name", id, class_mask, speed, missile_speed, ???, flags, ???, ???, ???, spell_level, ???, ???, min_range, max_range, cooldown, gcd, category_cooldown, ???, charges, charge_cooldown, ???, ???, ???, ???, duration, ???, ???, ???, ...}
-      # Based on Divine Protection example: 60000 cooldown at position ~16, 40.0 range around position ~14-15
+      # Only a subset of fields from sc_spell_data.inc are parsed below:
+      # { "Name", id, class_mask, school_mask, speed, missile_speed, ..., spell_level, ..., min_range, max_range, cooldown, gcd, category_cooldown, ..., charges, charge_cooldown, ..., duration, max_duration, ... }
+      # See field mapping in spell_info below. Unused fields are ignored.
       
       spell_info = {
         id: id,
