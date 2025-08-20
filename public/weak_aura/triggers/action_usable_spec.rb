@@ -33,7 +33,7 @@ RSpec.describe Trigger::ActionUsable do
       
       expect(trigger[:type]).to eq('spell')
       expect(trigger[:event]).to eq('Action Usable')
-      expect(trigger[:spellName]).to eq('Mortal Strike')
+      expect(trigger[:spellName]).to eq(12294)
       expect(trigger[:realSpellName]).to eq('Mortal Strike')
       expect(trigger[:use_spellName]).to eq(true)
       expect(trigger[:use_exact_spellName]).to eq(false)

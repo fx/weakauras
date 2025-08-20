@@ -55,7 +55,7 @@ module Trigger
                            trigger: {
                              "useStacks": true,
                              "stacksOperator": stacks_operator,
-                             "stacks": stacks.to_s
+                             "stacks": stacks
                            }
                          })
       end

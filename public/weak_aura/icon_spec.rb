@@ -17,7 +17,7 @@ RSpec.describe WeakAura::Icon do
         action_usable!
       end.as_json
       trigger = icon[:triggers][1][:trigger]
-      expect(trigger[:spellName]).to eq('Rampage')
+      expect(trigger[:spellName]).to eq(184367)
     end
 
     it 'passes on named arguments' do

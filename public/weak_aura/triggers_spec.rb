@@ -133,7 +133,7 @@ RSpec.describe Trigger::AuraStatus do
       json = trigger.as_json
       
       expect(json[:trigger][:type]).to eq('custom')
-      expect(json[:trigger][:custom]).to include('not WeakAuras.IsDisplayActive')
+      expect(json[:trigger][:custom]).to include('not region or not region.state or not region.state.show')
       expect(json[:trigger][:custom]).to include('Obliterate')
       expect(json[:trigger][:event]).to eq('STATUS')
     end
@@ -143,9 +143,9 @@ RSpec.describe Trigger::AuraStatus do
       json = trigger.as_json
       
       expect(json[:trigger][:type]).to eq('custom')
-      expect(json[:trigger][:custom]).to include('WeakAuras.IsDisplayActive')
+      expect(json[:trigger][:custom]).to include('region and region.state and region.state.show')
       expect(json[:trigger][:custom]).to include('Obliterate')
-      expect(json[:trigger][:custom]).not_to include('not WeakAuras')
+      expect(json[:trigger][:custom]).not_to include('not region or not region.state')
       expect(json[:trigger][:event]).to eq('STATUS')
     end
   end

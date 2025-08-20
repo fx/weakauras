@@ -522,4 +522,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       conditions: conditions,
       tocversion: TOC_VERSION }
   end
+
+  # Make as_json public since casting makes it private
+  public :as_json
 end

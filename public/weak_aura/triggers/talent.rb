@@ -89,7 +89,7 @@ module Trigger
 
       trigger_data = {
         type: 'unit',
-        use_talent: false,
+        use_talent: true,
         talent: {
           single: @talent_id,
           multi: talent_multi
