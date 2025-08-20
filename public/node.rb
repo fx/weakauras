@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'casting'
+require 'digest'
+require 'json'
+
 TOC_VERSION = 110_002
 
 WOW_SPECS = {
@@ -72,7 +76,7 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       disjunctive: 'any',
       activeTriggerMode: -10
     }
-    @actions = actions
+    @actions = actions || { start: [], init: [], finish: [] }
     @conditions = []
     @type = type
     @options = self.class.options.dup || {}
@@ -102,7 +106,11 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
     return @id unless value
 
     @uid = Digest::SHA1.hexdigest([value, parent, triggers, actions].to_json)[0..10]
-    @id = "#{value} (#{@uid})"
+    @id = value
+  end
+
+  def all_triggers!
+    trigger_options.merge!({ disjunctive: 'all' })
   end
 
   alias name id
@@ -142,6 +150,14 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
   end
 
   def map_triggers(triggers)
+    # Check if any triggers are talent triggers
+    has_talent_trigger = triggers.any? { |t| t.is_a?(Trigger::Talent) }
+    
+    # If there are talent triggers, force ALL logic
+    if has_talent_trigger
+      trigger_options[:disjunctive] = 'all'
+    end
+    
     Hash[*triggers.each_with_index.to_h do |trigger, index|
            [index + 1, trigger.as_json]
          end.flatten].merge(trigger_options)
@@ -153,16 +169,16 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       class_and_spec: class_and_spec,
       use_class_and_spec: class_and_spec ? true : false,
       size: {
-        multi: []
+        multi: {}
       },
       talent: {
-        multi: []
+        multi: {}
       },
       spec: {
-        multi: []
+        multi: {}
       },
       class: {
-        multi: []
+        multi: {}
       }
     }
   end
@@ -196,16 +212,40 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
 
   def add_node(node)
     @children << node
-    # Merge up all children on all parents. Nothing includes this, only the top level WeakAura.
     controlled_children << node
-    parent.children.concat(children).uniq! if parent
     node
   end
 
-  def glow!(**options) # rubocop:disable Metrics/MethodLength
+  def all_descendants
+    result = []
+    children.each do |child|
+      result << child
+      if child.respond_to?(:children) && child.children.any?
+        result.concat(child.all_descendants)
+      end
+    end
+    result
+  end
+
+  private
+  
+  def get_triggers_data
+    if respond_to?(:triggers) && !triggers.nil?
+      triggers
+    elsif respond_to?(:as_json) && as_json.is_a?(Hash) && as_json['triggers']
+      as_json['triggers']
+    else
+      nil
+    end
+  end
+  
+  public
+  
+  def glow!(**options) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
     raise 'glow! only supports a single check, use multiple `glow!` calls for multiple checks.' if options.keys.size > 1
 
     check = []
+    triggers_data = get_triggers_data
     if options.empty?
       check = {
         trigger: 1,
@@ -223,17 +263,127 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
         'trigger' => 1
       }
     end
+    
+    if options[:stacks]
+      # Handle stacks condition for glowing based on buff/debuff stacks
+      stacks_hash = options[:stacks]
+      if stacks_hash.is_a?(Hash) && triggers_data
+        aura_name = stacks_hash.keys.first
+        stack_condition = stacks_hash[aura_name]
+        
+        # Find the trigger index for this aura
+        trigger_index = if triggers_data.is_a?(Hash)
+                          # For hash-based triggers, find by checking aura names in the trigger hash
+                          result = triggers_data.find do |k, v| 
+                            next unless k.to_s.match?(/^\d+$/) && v.is_a?(Hash) && v['trigger']
+                            trigger_data = v['trigger']
+                            trigger_data['auranames']&.include?(aura_name) || 
+                            trigger_data['aura_names']&.include?(aura_name)
+                          end
+                          result&.first&.to_i
+                        else
+                          # For array-based triggers
+                          triggers_data.find_index { |t| t.respond_to?(:aura_names) && t.aura_names.include?(aura_name) }
+                        end
+        
+        if trigger_index && trigger_index > 0
+          # For hash-based triggers, use the string key directly
+          # For array-based triggers, add 1 for 1-based indexing
+          trigger_ref = triggers_data.is_a?(Hash) ? trigger_index : trigger_index + 1
+          stack_value, stack_op = parse_operator(stack_condition)
+          check = {
+            'variable' => 'stacks',
+            'op' => stack_op,
+            'value' => stack_value.to_s,
+            'trigger' => trigger_ref
+          }
+        else
+          # If no matching trigger found, create empty check to avoid errors
+          check = []
+        end
+      end
+    end
+    
+    if options[:auras]
+      # Add aura triggers for each specified aura and create condition checks
+      aura_names = options[:auras]
+      aura_names = [aura_names] unless aura_names.is_a?(Array)
+      
+      # If triggers is already a Hash (from action_usable), we need to add to it differently
+      if triggers_data && triggers_data.is_a?(Hash)
+        # Find the next available trigger index
+        next_index = triggers.keys.select { |k| k.to_s.match?(/^\d+$/) }.map(&:to_i).max + 1
+        
+        trigger_indices = []
+        aura_names.each do |aura_name|
+          # Add new aura trigger to the hash
+          trigger = Trigger::Auras.new(aura_names: aura_name, show_on: :active)
+          triggers[next_index.to_s] = trigger.as_json
+          trigger_indices << next_index
+          next_index += 1
+        end
+      else
+        # triggers is an Array - handle as before
+        trigger_indices = []
+        aura_names.each do |aura_name|
+          # Check if we already have a trigger for this aura
+          existing_index = triggers.find_index do |t|
+            t.respond_to?(:aura_names) && t.aura_names.include?(aura_name) && t.show_on == :active
+          end
+          
+          if existing_index
+            trigger_indices << existing_index + 1
+          else
+            # Add new aura trigger
+            trigger = Trigger::Auras.new(aura_names: aura_name, show_on: :active)
+            triggers << trigger
+            trigger_indices << triggers.size
+          end
+        end
+      end
+      
+      # Create condition checks for each aura trigger
+      if trigger_indices.size == 1
+        check = {
+          trigger: trigger_indices.first,
+          variable: 'show',
+          value: 1
+        }
+      else
+        # Multiple auras - use OR logic
+        checks = trigger_indices.map do |idx|
+          {
+            trigger: idx,
+            variable: 'show',
+            value: 1
+          }
+        end
+        check = {
+          checks: checks,
+          combine_type: 'or'
+        }
+      end
+    end
 
+    # Don't add condition if check is empty
+    return if check.is_a?(Array) && check.empty?
+    
     @conditions ||= []
-    @conditions << {
-      check: check,
+    # Ensure check is wrapped properly
+    condition_checks = if check.is_a?(Hash) && !check.key?(:checks) && !check.key?('checks')
+                         { check: check }
+                       else
+                         { check: check }
+                       end
+    
+    @conditions << condition_checks.merge(
       changes: [
         {
           value: true,
           property: 'sub.3.glow'
         }
       ]
-    }
+    )
   end
 
   def aura(name, **options, &block)
@@ -271,13 +421,118 @@ class Node # rubocop:disable Style/Documentation,Metrics/ClassLength
       ]
     }
   end
+  
+  def debug_log!
+    # Pass debug_log up to the root WeakAura
+    root = self
+    root = root.parent while root.parent
+    root.debug_log! if root.respond_to?(:debug_log!)
+  end
+  
+  def information_hash
+    # Get debug log status from root WeakAura
+    root = self
+    root = root.parent while root.parent
+    if root.respond_to?(:debug_log_enabled) && root.debug_log_enabled
+      { debugLog: true }
+    else
+      []
+    end
+  end
+
+  def and_conditions(*checks, &block) # rubocop:disable Metrics/MethodLength
+    @conditions ||= []
+    condition_checks = checks.map do |check|
+      build_condition_check(check)
+    end
+    
+    @conditions << {
+      check: {
+        checks: condition_checks,
+        combine_type: 'and'
+      },
+      changes: block ? instance_eval(&block) : [{ property: 'alpha', value: 1 }]
+    }
+  end
+
+  def or_conditions(*checks, &block) # rubocop:disable Metrics/MethodLength
+    @conditions ||= []
+    condition_checks = checks.map do |check|
+      build_condition_check(check)
+    end
+    
+    @conditions << {
+      check: {
+        checks: condition_checks,
+        combine_type: 'or'
+      },
+      changes: block ? instance_eval(&block) : [{ property: 'alpha', value: 1 }]
+    }
+  end
+
+  def priority(level = nil)
+    return @priority unless level
+    @priority = level
+  end
+
+  def exclusive_group(group_name = nil)
+    return @exclusive_group unless group_name
+    @exclusive_group = group_name
+  end
+
+  private
+
+  def build_condition_check(check) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity
+    case check
+    when Hash
+      if check[:aura]
+        {
+          trigger: check[:trigger] || 1,
+          variable: 'show',
+          value: check[:value] || 1
+        }
+      elsif check[:power]
+        power_value, power_op = parse_operator(check[:power])
+        {
+          trigger: check[:trigger] || 1,
+          variable: 'power',
+          op: power_op,
+          value: power_value.to_s
+        }
+      elsif check[:charges]
+        charges_value, charges_op = parse_operator(check[:charges])
+        {
+          trigger: check[:trigger] || 1,
+          variable: 'charges',
+          op: charges_op,
+          value: charges_value.to_s
+        }
+      elsif check[:stacks]
+        stacks_value, stacks_op = parse_operator(check[:stacks])
+        {
+          trigger: check[:trigger] || 1,
+          variable: 'stacks',
+          op: stacks_op,
+          value: stacks_value.to_s
+        }
+      else
+        check
+      end
+    else
+      { trigger: 1, variable: 'show', value: 1 }
+    end
+  end
 
   def as_json
-    { id: "#{id} (#{@uid})",
+    { id: id,
+      uid: @uid,
       load: load,
       triggers: triggers.is_a?(Hash) ? triggers : map_triggers(triggers),
       actions: actions,
       conditions: conditions,
       tocversion: TOC_VERSION }
   end
+
+  # Make as_json public since casting makes it private
+  public :as_json
 end

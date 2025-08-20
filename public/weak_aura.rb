@@ -1,12 +1,27 @@
 # frozen_string_literal: true
 
+require_relative 'core_ext/hash'
 require_relative 'node'
 
 class WeakAura < Node # rubocop:disable Style/Documentation
   def initialize(type: nil)
     super
     @type = type
+    @debug_log_enabled = false
     extend(type) if type
+  end
+  
+  def debug_log!
+    @debug_log_enabled = true
+  end
+  
+  def debug_log_enabled
+    @debug_log_enabled
+  end
+  
+  def information_hash
+    return [] unless @debug_log_enabled
+    { debugLog: true }
   end
 
   def as_json # rubocop:disable Metrics/MethodLength
@@ -40,7 +55,7 @@ class WeakAura < Node # rubocop:disable Style/Documentation
             event: 'Health',
             debuffType: 'HELPFUL'
           },
-          untrigger: []
+          untrigger: {}
         }
       ],
       animation: {
@@ -75,14 +90,25 @@ class WeakAura < Node # rubocop:disable Style/Documentation
       subRegions: [],
       selfPoint: 'CENTER',
       conditions: conditions,
-      information: [],
+      information: information_hash,
       regionType: 'group'
     }
   end
 
+  def all_descendants
+    result = []
+    children.each do |child|
+      result << child
+      if child.respond_to?(:children) && child.children.any?
+        result.concat(child.all_descendants)
+      end
+    end
+    result
+  end
+
   def export
     {
-      c: children.map(&:as_json),
+      c: all_descendants.map(&:as_json),
       m: 'd',
       d: as_json,
       s: '5.8.6',

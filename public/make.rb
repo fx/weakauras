@@ -15,6 +15,7 @@ config = $stdin.read
 
 require_relative 'weak_aura'
 require_relative 'whack_aura'
+require_relative 'data/spell_data'
 
 wa = WeakAura.new(type: WhackAura)
 wa.instance_eval config

@@ -1,0 +1,316 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WeakAura",
+  "description": "JSON Schema for WeakAuras2 data structures",
+  "definitions": {
+    "trigger": {
+      "type": "object",
+      "properties": {
+        "trigger": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" },
+            "names": { "type": "array", "items": { "type": "string" } },
+            "event": { "type": "string" },
+            "subeventPrefix": { "type": "string" },
+            "subeventSuffix": { "type": "string" },
+            "spellIds": { "type": "array", "items": { "type": "number" } },
+            "unit": { "type": "string" },
+            "debuffType": { "type": "string", "enum": ["HELPFUL", "HARMFUL", "BOTH"] }
+          }
+        },
+        "untrigger": { "type": "object" }
+      }
+    },
+    "load": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "object",
+          "properties": { "multi": { "type": "object" } }
+        },
+        "spec": {
+          "type": "object",
+          "properties": { "multi": { "type": "object" } }
+        },
+        "class": {
+          "type": "object",
+          "properties": { "multi": { "type": "object" } }
+        },
+        "talent": {
+          "type": "object",
+          "properties": { "multi": { "type": "object" } }
+        },
+        "use_class": { "type": "boolean" },
+        "use_spec": { "type": "boolean" },
+        "use_class_and_spec": { "type": "boolean" },
+        "class_and_spec": {
+          "type": "object",
+          "properties": {
+            "single": { "type": "number" },
+            "multi": { "type": "object" }
+          }
+        }
+      }
+    },
+    "actions": {
+      "type": "object",
+      "properties": {
+        "init": { "type": "object" },
+        "start": { "type": "object" },
+        "finish": { "type": "object" }
+      }
+    },
+    "animation": {
+      "type": "object",
+      "properties": {
+        "start": { "$ref": "#/definitions/animationPhase" },
+        "main": { "$ref": "#/definitions/animationPhase" },
+        "finish": { "$ref": "#/definitions/animationPhase" }
+      }
+    },
+    "animationPhase": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "duration_type": { "type": "string" },
+        "easeType": { "type": "string" },
+        "easeStrength": { "type": "number" }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "object",
+          "properties": {
+            "trigger": { "type": ["number", "string"] },
+            "variable": { "type": "string" },
+            "value": { "type": ["string", "number", "boolean"] },
+            "op": { "type": "string" },
+            "checks": { "type": "array" },
+            "combine_type": { "type": "string", "enum": ["and", "or"] }
+          }
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "property": { "type": "string" },
+              "value": {}
+            }
+          }
+        }
+      }
+    },
+    "subRegion": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "text_text": { "type": "string" },
+        "text_font": { "type": "string" },
+        "text_fontSize": { "type": "number" },
+        "glow": { "type": "boolean" },
+        "glow_type": { "type": "string" }
+      }
+    },
+    "baseAura": {
+      "type": "object",
+      "required": ["id", "uid", "regionType", "internalVersion"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Human-readable identifier for the aura"
+        },
+        "uid": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9]{11}$",
+          "description": "Unique 11-character identifier"
+        },
+        "parent": {
+          "type": "string",
+          "description": "ID of the parent group (only present for child auras)"
+        },
+        "regionType": {
+          "type": "string",
+          "enum": ["group", "dynamicgroup", "icon", "text", "texture", "progresstexture", "aurabar", "model", "stopmotion"]
+        },
+        "internalVersion": { "type": "number" },
+        "tocversion": { "type": "number" },
+        "load": { "$ref": "#/definitions/load" },
+        "triggers": {
+          "oneOf": [
+            { "type": "array", "items": { "$ref": "#/definitions/trigger" } },
+            { "type": "object", "additionalProperties": { "$ref": "#/definitions/trigger" } }
+          ]
+        },
+        "actions": { "$ref": "#/definitions/actions" },
+        "animation": { "$ref": "#/definitions/animation" },
+        "conditions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/condition" }
+        },
+        "config": { "type": "object" },
+        "authorOptions": { "type": "object" },
+        "information": { "type": "object" },
+        "subRegions": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/subRegion" }
+        },
+        "anchorPoint": { "type": "string" },
+        "selfPoint": { "type": "string" },
+        "anchorFrameType": { "type": "string" },
+        "xOffset": { "type": "number" },
+        "yOffset": { "type": "number" },
+        "frameStrata": { "type": "number" },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "scale": { "type": "number" },
+        "alpha": { "type": "number" }
+      }
+    },
+    "groupAura": {
+      "allOf": [
+        { "$ref": "#/definitions/baseAura" },
+        {
+          "type": "object",
+          "required": ["controlledChildren"],
+          "properties": {
+            "regionType": { "enum": ["group", "dynamicgroup"] },
+            "controlledChildren": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Array of child aura IDs"
+            },
+            "border": { "type": "boolean" },
+            "borderColor": {
+              "type": "array",
+              "items": { "type": "number" },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            "backdropColor": {
+              "type": "array",
+              "items": { "type": "number" },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            "borderEdge": { "type": "string" },
+            "borderBackdrop": { "type": "string" },
+            "borderOffset": { "type": "number" },
+            "borderInset": { "type": "number" },
+            "borderSize": { "type": "number" }
+          }
+        }
+      ]
+    },
+    "dynamicGroupAura": {
+      "allOf": [
+        { "$ref": "#/definitions/groupAura" },
+        {
+          "type": "object",
+          "properties": {
+            "regionType": { "const": "dynamicgroup" },
+            "grow": { "type": "string", "enum": ["UP", "DOWN", "LEFT", "RIGHT", "HORIZONTAL", "VERTICAL", "CIRCLE", "COUNTERCIRCLE", "GRID", "CUSTOM"] },
+            "align": { "type": "string", "enum": ["LEFT", "RIGHT", "CENTER"] },
+            "rotation": { "type": "number" },
+            "space": { "type": "number" },
+            "stagger": { "type": "number" },
+            "radius": { "type": "number" },
+            "animate": { "type": "boolean" },
+            "sort": { "type": "string", "enum": ["none", "ascending", "descending", "hybrid", "custom"] },
+            "constantFactor": { "type": "string", "enum": ["ANGLE", "RADIUS", "SPACING"] },
+            "useLimit": { "type": "boolean" },
+            "limit": { "type": "number" },
+            "gridType": { "type": "string", "enum": ["RD", "RU", "LD", "LU"] },
+            "gridWidth": { "type": "number" },
+            "rowSpace": { "type": "number" },
+            "columnSpace": { "type": "number" },
+            "arcLength": { "type": "number" },
+            "fullCircle": { "type": "boolean" }
+          }
+        }
+      ]
+    },
+    "iconAura": {
+      "allOf": [
+        { "$ref": "#/definitions/baseAura" },
+        {
+          "type": "object",
+          "properties": {
+            "regionType": { "const": "icon" },
+            "icon": { "type": "boolean" },
+            "desaturate": { "type": "boolean" },
+            "iconSource": { "type": "number" },
+            "displayIcon": { "type": "string" },
+            "color": {
+              "type": "array",
+              "items": { "type": "number" },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            "zoom": { "type": "number" },
+            "keepAspectRatio": { "type": "boolean" },
+            "cooldown": { "type": "boolean" },
+            "cooldownTextDisabled": { "type": "boolean" },
+            "cooldownSwipe": { "type": "boolean" },
+            "cooldownEdge": { "type": "boolean" },
+            "useCooldownModRate": { "type": "boolean" },
+            "inverse": { "type": "boolean" }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "d": {
+      "description": "Main aura data",
+      "oneOf": [
+        { "$ref": "#/definitions/groupAura" },
+        { "$ref": "#/definitions/dynamicGroupAura" },
+        { "$ref": "#/definitions/iconAura" },
+        { "$ref": "#/definitions/baseAura" }
+      ]
+    },
+    "c": {
+      "description": "Child auras array",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/groupAura" },
+          { "$ref": "#/definitions/dynamicGroupAura" },
+          { "$ref": "#/definitions/iconAura" },
+          { "$ref": "#/definitions/baseAura" }
+        ]
+      }
+    },
+    "m": {
+      "description": "Mode flag",
+      "type": "string",
+      "enum": ["d", "i"]
+    },
+    "s": {
+      "description": "WeakAuras version",
+      "type": "string"
+    },
+    "v": {
+      "description": "Version number",
+      "type": "number"
+    },
+    "wagoID": {
+      "description": "Wago.io identifier",
+      "type": "string"
+    },
+    "source": {
+      "description": "Source URL",
+      "type": "string"
+    },
+    "preferredSlotId": {
+      "description": "Preferred display slot",
+      "type": "number"
+    }
+  },
+  "required": ["d"]
+}

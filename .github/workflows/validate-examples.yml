@@ -1,0 +1,53 @@
+name: Validate DSL Examples
+
+on:
+  push:
+    branches: [ main, feature/* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-examples:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2
+        bundler-cache: true
+    
+    - name: Find and validate all DSL examples
+      run: |
+        echo "Finding all DSL examples..."
+        find public/examples -name "*.rb" | sort
+        
+        echo "Validating DSL compilation..."
+        failed=0
+        total=0
+        
+        for example in $(find public/examples -name "*.rb" | sort); do
+          echo "Testing: $example"
+          total=$((total + 1))
+          
+          if ruby scripts/compile-dsl.rb --analyze "$example" > /tmp/validation.log 2>&1; then
+            echo "✅ $example - PASSED"
+          else
+            echo "❌ $example - FAILED"
+            echo "Error output:"
+            cat /tmp/validation.log
+            failed=$((failed + 1))
+          fi
+          echo "---"
+        done
+        
+        echo "Results: $((total - failed))/$total examples passed"
+        
+        if [ $failed -gt 0 ]; then
+          echo "❌ $failed examples failed validation"
+          exit 1
+        else
+          echo "✅ All examples passed validation"
+        fi

@@ -1,0 +1,524 @@
+{
+  "version": "20250819_024208",
+  "specializations": {
+    "71": {
+      "name": "Arms",
+      "class": "Warrior",
+      "simc_name": "WARRIOR_ARMS",
+      "id": 71
+    },
+    "72": {
+      "name": "Fury",
+      "class": "Warrior",
+      "simc_name": "WARRIOR_FURY",
+      "id": 72
+    },
+    "73": {
+      "name": "Protection",
+      "class": "Warrior",
+      "simc_name": "WARRIOR_PROTECTION",
+      "id": 73
+    },
+    "65": {
+      "name": "Holy",
+      "class": "Paladin",
+      "simc_name": "PALADIN_HOLY",
+      "id": 65
+    },
+    "66": {
+      "name": "Protection",
+      "class": "Paladin",
+      "simc_name": "PALADIN_PROTECTION",
+      "id": 66
+    },
+    "70": {
+      "name": "Retribution",
+      "class": "Paladin",
+      "simc_name": "PALADIN_RETRIBUTION",
+      "id": 70
+    },
+    "253": {
+      "name": "Beast Mastery",
+      "class": "Hunter",
+      "simc_name": "HUNTER_BEAST_MASTERY",
+      "id": 253
+    },
+    "254": {
+      "name": "Marksmanship",
+      "class": "Hunter",
+      "simc_name": "HUNTER_MARKSMANSHIP",
+      "id": 254
+    },
+    "255": {
+      "name": "Survival",
+      "class": "Hunter",
+      "simc_name": "HUNTER_SURVIVAL",
+      "id": 255
+    },
+    "259": {
+      "name": "Assassination",
+      "class": "Rogue",
+      "simc_name": "ROGUE_ASSASSINATION",
+      "id": 259
+    },
+    "260": {
+      "name": "Outlaw",
+      "class": "Rogue",
+      "simc_name": "ROGUE_OUTLAW",
+      "id": 260
+    },
+    "261": {
+      "name": "Subtlety",
+      "class": "Rogue",
+      "simc_name": "ROGUE_SUBTLETY",
+      "id": 261
+    },
+    "256": {
+      "name": "Discipline",
+      "class": "Priest",
+      "simc_name": "PRIEST_DISCIPLINE",
+      "id": 256
+    },
+    "257": {
+      "name": "Holy",
+      "class": "Priest",
+      "simc_name": "PRIEST_HOLY",
+      "id": 257
+    },
+    "258": {
+      "name": "Shadow",
+      "class": "Priest",
+      "simc_name": "PRIEST_SHADOW",
+      "id": 258
+    },
+    "250": {
+      "name": "Blood",
+      "class": "Death Knight",
+      "simc_name": "DEATH_KNIGHT_BLOOD",
+      "id": 250
+    },
+    "251": {
+      "name": "Frost",
+      "class": "Death Knight",
+      "simc_name": "DEATH_KNIGHT_FROST",
+      "id": 251
+    },
+    "252": {
+      "name": "Unholy",
+      "class": "Death Knight",
+      "simc_name": "DEATH_KNIGHT_UNHOLY",
+      "id": 252
+    },
+    "262": {
+      "name": "Elemental",
+      "class": "Shaman",
+      "simc_name": "SHAMAN_ELEMENTAL",
+      "id": 262
+    },
+    "263": {
+      "name": "Enhancement",
+      "class": "Shaman",
+      "simc_name": "SHAMAN_ENHANCEMENT",
+      "id": 263
+    },
+    "264": {
+      "name": "Restoration",
+      "class": "Shaman",
+      "simc_name": "SHAMAN_RESTORATION",
+      "id": 264
+    },
+    "62": {
+      "name": "Arcane",
+      "class": "Mage",
+      "simc_name": "MAGE_ARCANE",
+      "id": 62
+    },
+    "63": {
+      "name": "Fire",
+      "class": "Mage",
+      "simc_name": "MAGE_FIRE",
+      "id": 63
+    },
+    "64": {
+      "name": "Frost",
+      "class": "Mage",
+      "simc_name": "MAGE_FROST",
+      "id": 64
+    },
+    "265": {
+      "name": "Affliction",
+      "class": "Warlock",
+      "simc_name": "WARLOCK_AFFLICTION",
+      "id": 265
+    },
+    "266": {
+      "name": "Demonology",
+      "class": "Warlock",
+      "simc_name": "WARLOCK_DEMONOLOGY",
+      "id": 266
+    },
+    "267": {
+      "name": "Destruction",
+      "class": "Warlock",
+      "simc_name": "WARLOCK_DESTRUCTION",
+      "id": 267
+    },
+    "268": {
+      "name": "Brewmaster",
+      "class": "Monk",
+      "simc_name": "MONK_BREWMASTER",
+      "id": 268
+    },
+    "270": {
+      "name": "Mistweaver",
+      "class": "Monk",
+      "simc_name": "MONK_MISTWEAVER",
+      "id": 270
+    },
+    "269": {
+      "name": "Windwalker",
+      "class": "Monk",
+      "simc_name": "MONK_WINDWALKER",
+      "id": 269
+    },
+    "102": {
+      "name": "Balance",
+      "class": "Druid",
+      "simc_name": "DRUID_BALANCE",
+      "id": 102
+    },
+    "103": {
+      "name": "Feral",
+      "class": "Druid",
+      "simc_name": "DRUID_FERAL",
+      "id": 103
+    },
+    "104": {
+      "name": "Guardian",
+      "class": "Druid",
+      "simc_name": "DRUID_GUARDIAN",
+      "id": 104
+    },
+    "105": {
+      "name": "Restoration",
+      "class": "Druid",
+      "simc_name": "DRUID_RESTORATION",
+      "id": 105
+    },
+    "577": {
+      "name": "Havoc",
+      "class": "Demon Hunter",
+      "simc_name": "DEMON_HUNTER_HAVOC",
+      "id": 577
+    },
+    "581": {
+      "name": "Vengeance",
+      "class": "Demon Hunter",
+      "simc_name": "DEMON_HUNTER_VENGEANCE",
+      "id": 581
+    },
+    "1467": {
+      "name": "Devastation",
+      "class": "Evoker",
+      "simc_name": "EVOKER_DEVASTATION",
+      "id": 1467
+    },
+    "1468": {
+      "name": "Preservation",
+      "class": "Evoker",
+      "simc_name": "EVOKER_PRESERVATION",
+      "id": 1468
+    },
+    "1473": {
+      "name": "Augmentation",
+      "class": "Evoker",
+      "simc_name": "EVOKER_AUGMENTATION",
+      "id": 1473
+    }
+  },
+  "classes": {
+    "DEATH_KNIGHT": {
+      "name": "Death Knight",
+      "simc_name": "DEATH_KNIGHT"
+    },
+    "DEMON_HUNTER": {
+      "name": "Demon Hunter",
+      "simc_name": "DEMON_HUNTER"
+    },
+    "DRUID": {
+      "name": "Druid",
+      "simc_name": "DRUID"
+    },
+    "EVOKER": {
+      "name": "Evoker",
+      "simc_name": "EVOKER"
+    },
+    "HUNTER": {
+      "name": "Hunter",
+      "simc_name": "HUNTER"
+    },
+    "MAGE": {
+      "name": "Mage",
+      "simc_name": "MAGE"
+    },
+    "MONK": {
+      "name": "Monk",
+      "simc_name": "MONK"
+    },
+    "PALADIN": {
+      "name": "Paladin",
+      "simc_name": "PALADIN"
+    },
+    "PRIEST": {
+      "name": "Priest",
+      "simc_name": "PRIEST"
+    },
+    "ROGUE": {
+      "name": "Rogue",
+      "simc_name": "ROGUE"
+    },
+    "SHAMAN": {
+      "name": "Shaman",
+      "simc_name": "SHAMAN"
+    },
+    "WARLOCK": {
+      "name": "Warlock",
+      "simc_name": "WARLOCK"
+    },
+    "WARRIOR": {
+      "name": "Warrior",
+      "simc_name": "WARRIOR"
+    },
+    "ENEMY_ADD_BOSS": {
+      "name": "Enemy Add Boss",
+      "simc_name": "ENEMY_ADD_BOSS"
+    },
+    "TANK_DUMMY": {
+      "name": "Tank Dummy",
+      "simc_name": "TANK_DUMMY"
+    }
+  },
+  "class_spec_mapping": {
+    "WARRIOR": {
+      "Arms": {
+        "wow_spec_id": 71,
+        "wa_spec_index": 1,
+        "simc_name": "WARRIOR_ARMS"
+      },
+      "Fury": {
+        "wow_spec_id": 72,
+        "wa_spec_index": 2,
+        "simc_name": "WARRIOR_FURY"
+      },
+      "Protection": {
+        "wow_spec_id": 73,
+        "wa_spec_index": 3,
+        "simc_name": "WARRIOR_PROTECTION"
+      }
+    },
+    "PALADIN": {
+      "Holy": {
+        "wow_spec_id": 65,
+        "wa_spec_index": 1,
+        "simc_name": "PALADIN_HOLY"
+      },
+      "Protection": {
+        "wow_spec_id": 66,
+        "wa_spec_index": 2,
+        "simc_name": "PALADIN_PROTECTION"
+      },
+      "Retribution": {
+        "wow_spec_id": 70,
+        "wa_spec_index": 3,
+        "simc_name": "PALADIN_RETRIBUTION"
+      }
+    },
+    "HUNTER": {
+      "Beast Mastery": {
+        "wow_spec_id": 253,
+        "wa_spec_index": 1,
+        "simc_name": "HUNTER_BEAST_MASTERY"
+      },
+      "Marksmanship": {
+        "wow_spec_id": 254,
+        "wa_spec_index": 2,
+        "simc_name": "HUNTER_MARKSMANSHIP"
+      },
+      "Survival": {
+        "wow_spec_id": 255,
+        "wa_spec_index": 3,
+        "simc_name": "HUNTER_SURVIVAL"
+      }
+    },
+    "ROGUE": {
+      "Assassination": {
+        "wow_spec_id": 259,
+        "wa_spec_index": 1,
+        "simc_name": "ROGUE_ASSASSINATION"
+      },
+      "Outlaw": {
+        "wow_spec_id": 260,
+        "wa_spec_index": 2,
+        "simc_name": "ROGUE_OUTLAW"
+      },
+      "Subtlety": {
+        "wow_spec_id": 261,
+        "wa_spec_index": 3,
+        "simc_name": "ROGUE_SUBTLETY"
+      }
+    },
+    "PRIEST": {
+      "Discipline": {
+        "wow_spec_id": 256,
+        "wa_spec_index": 1,
+        "simc_name": "PRIEST_DISCIPLINE"
+      },
+      "Holy": {
+        "wow_spec_id": 257,
+        "wa_spec_index": 2,
+        "simc_name": "PRIEST_HOLY"
+      },
+      "Shadow": {
+        "wow_spec_id": 258,
+        "wa_spec_index": 3,
+        "simc_name": "PRIEST_SHADOW"
+      }
+    },
+    "DEATH_KNIGHT": {
+      "Blood": {
+        "wow_spec_id": 250,
+        "wa_spec_index": 1,
+        "simc_name": "DEATH_KNIGHT_BLOOD"
+      },
+      "Frost": {
+        "wow_spec_id": 251,
+        "wa_spec_index": 2,
+        "simc_name": "DEATH_KNIGHT_FROST"
+      },
+      "Unholy": {
+        "wow_spec_id": 252,
+        "wa_spec_index": 3,
+        "simc_name": "DEATH_KNIGHT_UNHOLY"
+      }
+    },
+    "SHAMAN": {
+      "Elemental": {
+        "wow_spec_id": 262,
+        "wa_spec_index": 1,
+        "simc_name": "SHAMAN_ELEMENTAL"
+      },
+      "Enhancement": {
+        "wow_spec_id": 263,
+        "wa_spec_index": 2,
+        "simc_name": "SHAMAN_ENHANCEMENT"
+      },
+      "Restoration": {
+        "wow_spec_id": 264,
+        "wa_spec_index": 3,
+        "simc_name": "SHAMAN_RESTORATION"
+      }
+    },
+    "MAGE": {
+      "Arcane": {
+        "wow_spec_id": 62,
+        "wa_spec_index": 1,
+        "simc_name": "MAGE_ARCANE"
+      },
+      "Fire": {
+        "wow_spec_id": 63,
+        "wa_spec_index": 2,
+        "simc_name": "MAGE_FIRE"
+      },
+      "Frost": {
+        "wow_spec_id": 64,
+        "wa_spec_index": 3,
+        "simc_name": "MAGE_FROST"
+      }
+    },
+    "WARLOCK": {
+      "Affliction": {
+        "wow_spec_id": 265,
+        "wa_spec_index": 1,
+        "simc_name": "WARLOCK_AFFLICTION"
+      },
+      "Demonology": {
+        "wow_spec_id": 266,
+        "wa_spec_index": 2,
+        "simc_name": "WARLOCK_DEMONOLOGY"
+      },
+      "Destruction": {
+        "wow_spec_id": 267,
+        "wa_spec_index": 3,
+        "simc_name": "WARLOCK_DESTRUCTION"
+      }
+    },
+    "MONK": {
+      "Brewmaster": {
+        "wow_spec_id": 268,
+        "wa_spec_index": 1,
+        "simc_name": "MONK_BREWMASTER"
+      },
+      "Mistweaver": {
+        "wow_spec_id": 270,
+        "wa_spec_index": 2,
+        "simc_name": "MONK_MISTWEAVER"
+      },
+      "Windwalker": {
+        "wow_spec_id": 269,
+        "wa_spec_index": 3,
+        "simc_name": "MONK_WINDWALKER"
+      }
+    },
+    "DRUID": {
+      "Balance": {
+        "wow_spec_id": 102,
+        "wa_spec_index": 1,
+        "simc_name": "DRUID_BALANCE"
+      },
+      "Feral": {
+        "wow_spec_id": 103,
+        "wa_spec_index": 2,
+        "simc_name": "DRUID_FERAL"
+      },
+      "Guardian": {
+        "wow_spec_id": 104,
+        "wa_spec_index": 3,
+        "simc_name": "DRUID_GUARDIAN"
+      },
+      "Restoration": {
+        "wow_spec_id": 105,
+        "wa_spec_index": 4,
+        "simc_name": "DRUID_RESTORATION"
+      }
+    },
+    "DEMON_HUNTER": {
+      "Havoc": {
+        "wow_spec_id": 577,
+        "wa_spec_index": 1,
+        "simc_name": "DEMON_HUNTER_HAVOC"
+      },
+      "Vengeance": {
+        "wow_spec_id": 581,
+        "wa_spec_index": 2,
+        "simc_name": "DEMON_HUNTER_VENGEANCE"
+      }
+    },
+    "EVOKER": {
+      "Devastation": {
+        "wow_spec_id": 1467,
+        "wa_spec_index": 1,
+        "simc_name": "EVOKER_DEVASTATION"
+      },
+      "Preservation": {
+        "wow_spec_id": 1468,
+        "wa_spec_index": 2,
+        "simc_name": "EVOKER_PRESERVATION"
+      },
+      "Augmentation": {
+        "wow_spec_id": 1473,
+        "wa_spec_index": 3,
+        "simc_name": "EVOKER_AUGMENTATION"
+      }
+    }
+  }
+}

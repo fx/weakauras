@@ -39,7 +39,7 @@ class WeakAura
               event: 'Health',
               debuffType: 'HELPFUL'
             },
-            untrigger: []
+            untrigger: {}
           }
         ],
         animation: {
@@ -74,7 +74,7 @@ class WeakAura
         subRegions: [],
         selfPoint: 'CENTER',
         conditions: conditions,
-        information: [],
+        information: information_hash,
         regionType: 'group'
       }
     end

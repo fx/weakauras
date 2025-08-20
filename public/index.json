@@ -15,11 +15,11 @@
     "/examples/shaman/elemental.rb": {
       "title": "Shaman: Elemental"
     },
-    "/examples/rogue/outlaw.rb": {
-      "title": "Rogue: Outlaw"
-    },
     "/examples/priest/shadow.rb": {
       "title": "Priest: Shadow"
+    },
+    "/examples/rogue/outlaw.rb": {
+      "title": "Rogue: Outlaw"
     },
     "/examples/paladin/retribution.rb": {
       "title": "Paladin: Retribution"
@@ -27,17 +27,20 @@
     "/examples/paladin/protection.rb": {
       "title": "Paladin: Protection"
     },
-    "/examples/mage/frost.rb": {
-      "title": "Mage: Frost"
-    },
     "/examples/hunter/beastmastery.rb": {
       "title": "Hunter: Beast Mastery"
+    },
+    "/examples/mage/frost.rb": {
+      "title": "Mage: Frost"
     },
     "/examples/demonhunter/havoc.rb": {
       "title": "Demon Hunter: Havoc"
     },
+    "/examples/deathknight/frost_advanced.rb": {
+      "title": "Death Knight: Frost Advanced - Complex Rotation Logic"
+    },
     "/examples/deathknight/frost.rb": {
-      "title": "Death Knight: Frost (11.2)"
+      "title": "Death Knight: Frost (11.2) - Comprehensive Rotation"
     }
   },
   "examples": [
@@ -46,13 +49,14 @@
     "/examples/warrior/arms.rb",
     "/examples/shaman/restoration.rb",
     "/examples/shaman/elemental.rb",
-    "/examples/rogue/outlaw.rb",
     "/examples/priest/shadow.rb",
+    "/examples/rogue/outlaw.rb",
     "/examples/paladin/retribution.rb",
     "/examples/paladin/protection.rb",
-    "/examples/mage/frost.rb",
     "/examples/hunter/beastmastery.rb",
+    "/examples/mage/frost.rb",
     "/examples/demonhunter/havoc.rb",
+    "/examples/deathknight/frost_advanced.rb",
     "/examples/deathknight/frost.rb"
   ],
   "lua": [

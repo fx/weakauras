@@ -4,29 +4,81 @@
 # title: 'Paladin: Protection'
 # ---
 
-title 'Protection Paladin WhackAura'
+title 'Protection Paladin'
 load spec: :protection_paladin
 hide_ooc!
+debug_log!
 
-dynamic_group 'WhackAuras' do
-  action_usable "Avenger's Shield"
-  action_usable 'Divine Toll'
-  action_usable 'Hammer of the Righteous'
-  action_usable 'Judgment'
-  action_usable 'Hammer of Wrath'
-
-  # This needs exact matching on the id. Eye of Tyr changes to Hammer of Light,
-  # but the Hammer of Light spell id is never a usable action.
-  action_usable [{ spell_name: 'Eye of Tyr', spell: 387_174, exact: true }] do
+dynamic_group 'BAM' do
+  scale 0.6
+  offset y: -100, x: 80
+  
+  action_usable 'Avenging Wrath' do
     glow!
   end
-end
-
-dynamic_group 'Offensive' do
   action_usable 'Sentinel'
-  action_usable 'Guardian of Ancient Kings'
 end
 
 dynamic_group 'Defensive' do
+  scale 0.6
+  offset y: -100, x: -80
+  
+  action_usable 'Guardian of Ancient Kings'
   action_usable 'Ardent Defender'
+  action_usable 'Lay on Hands'
+end
+
+dynamic_group 'WhackAuras' do
+  scale 0.8
+  offset y: -140
+  
+  icon 'Eye of Tyr' do
+    action_usable!
+    glow!
+  end
+  
+  icon 'Hammer of Light' do
+    action_usable!
+    aura 'Blessing of Dawn', show_on: :active, type: 'buff'
+    glow!
+  end
+  
+  action_usable 'Bastion of Light'
+  
+  icon 'Consecration' do
+    action_usable!
+    aura 'Consecration', show_on: :missing, type: 'buff'
+    glow!
+  end
+  
+  icon 'Shield of the Righteous' do
+    action_usable!
+    power_check :holy_power, '>= 3'
+  end
+  
+  action_usable 'Divine Toll'
+  
+  icon 'Hammer of Wrath' do
+    action_usable!
+    aura 'Avenging Wrath', show_on: :active, type: 'buff'
+  end
+  
+  action_usable 'Judgment'
+  
+  icon 'Hammer of the Righteous' do
+    action_usable!
+    aura 'Shake the Heavens', show_on: :missing, type: 'buff'
+  end
+  
+  icon 'Blessed Hammer' do
+    action_usable!
+    talent_active 'Blessed Hammer'
+  end
+  
+  action_usable "Avenger's Shield"
+  
+  icon 'Word of Glory' do
+    action_usable!
+    aura 'Shining Light', show_on: :active, type: 'buff'
+  end
 end
