@@ -19,9 +19,6 @@ dynamic_group 'BAM' do
   action_usable 'Double Tap' do
     glow!
   end
-  action_usable 'Salvo' do
-    glow!
-  end
 end
 
 dynamic_group 'Defensive' do
@@ -49,12 +46,15 @@ dynamic_group 'WhackAuras' do
   end
   
   action_usable 'Rapid Fire'
-  action_usable 'Multi-Shot'
-  action_usable 'Kill Shot'
   
   icon 'Explosive Shot' do
     action_usable!
     talent_active 'Explosive Shot'
+    glow!
+  end
+  
+  action_usable 'Kill Shot' do
+    glow!
   end
   
   icon 'Black Arrow' do
