@@ -15,6 +15,10 @@ class WeakAura < Node # rubocop:disable Style/Documentation
     @debug_log_enabled = true
   end
   
+  def debug_log_enabled
+    @debug_log_enabled
+  end
+  
   def information_hash
     return [] unless @debug_log_enabled
     { debugLog: true }
