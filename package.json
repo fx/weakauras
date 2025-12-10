@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "src/lua/index.ts",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "npm run prebuild && next build",
