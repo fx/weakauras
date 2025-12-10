@@ -21,14 +21,14 @@
     "/examples/priest/shadow.rb": {
       "title": "Priest: Shadow"
     },
+    "/examples/mage/frost.rb": {
+      "title": "Mage: Frost"
+    },
     "/examples/paladin/retribution.rb": {
       "title": "Paladin: Retribution"
     },
     "/examples/paladin/protection.rb": {
       "title": "Paladin: Protection"
-    },
-    "/examples/mage/frost.rb": {
-      "title": "Mage: Frost"
     },
     "/examples/hunter/beastmastery.rb": {
       "title": "Hunter: Beast Mastery"
@@ -48,9 +48,9 @@
     "/examples/shaman/elemental.rb",
     "/examples/rogue/outlaw.rb",
     "/examples/priest/shadow.rb",
+    "/examples/mage/frost.rb",
     "/examples/paladin/retribution.rb",
     "/examples/paladin/protection.rb",
-    "/examples/mage/frost.rb",
     "/examples/hunter/beastmastery.rb",
     "/examples/demonhunter/havoc.rb",
     "/examples/deathknight/frost.rb"
