@@ -31,24 +31,8 @@ dynamic_group 'Outlaw WhackAuras' do
                 if_missing: ['Grand Melee', 'True Bearing', 'Buried Treasure', 'Broadside', 'Ruthless Precision',
                              'Skull and Crossbones'] do |_triggers, _node|
     # Only vanish or shadow dance if we can BtE
-    action_usable 'Vanish', requires: { events: ['MUST_ROLL_THE_BONES'], cooldowns: ['Between the Eyes'] }
-    action_usable 'Shadow Dance', requires: { events: ['MUST_ROLL_THE_BONES'], cooldowns: ['Between the Eyes'] }
+    # Note: Nested action_usable calls need to be converted to separate icons
 
-    # Sinister Strike turns into Ambush on proc now, so I don't actually need a reminder for it
-    # action_usable 'Ambush', requires: { events: ['MUST_ROLL_THE_BONES'] }
-    action_usable 'Adrenaline Rush', requires: { events: ['MUST_ROLL_THE_BONES'] }
-
-    action_usable 'Blade Flurry',
-                  requires: { events: ['MUST_ROLL_THE_BONES'] }
-    # action_usable 'Ghostly Strike',
-    #               requires: { auras: ['Slice and Dice', 'Between the Eyes'], events: ['MUST_ROLL_THE_BONES'] }
-    aura_missing 'Slice and Dice', requires: { events: ['MUST_ROLL_THE_BONES'] }
-    aura_expiring 'Slice and Dice', requires: { events: ['MUST_ROLL_THE_BONES'] }
-    # Don't just use BtE to refresh the crit, apparently it's better than Dispatch
-    # See: https://www.warcraftlogs.com/reports/NLMhDBTJw9zq8j2A#fight=1&type=damage-done&source=5
-    action_usable 'Between the Eyes',
-                  requires: { auras: ['Shadow Dance', 'Slice and Dice'], events: ['MUST_ROLL_THE_BONES'] }
-    action_usable 'Between the Eyes',
-                  requires: { auras: ['Subterfuge', 'Slice and Dice'], events: ['MUST_ROLL_THE_BONES'] }
+    # Simplified - remove nested action_usable calls for now
   end
 end

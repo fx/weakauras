@@ -1,46 +1,75 @@
-# frozen_string_literal: true
-
-# ---
-# title: 'Death Knight: Frost (11.2)'
-# ---
-
-title 'Frost Death Knight WhackAura'
+title 'Frost Death Knight'
 load spec: :frost_death_knight
 hide_ooc!
+debug_log!
 
-dynamic_group 'Frost DK Rotation' do
-  offset y: -100
+dynamic_group 'BAM' do
+  scale 0.8
+  offset y: 340, x: 0
   
-  action_usable 'Obliterate', if_stacks: { 'Killing Machine' => '>= 2' } do
+  icon 'Pillar of Frost' do
+    action_usable! cooldown_remaining: '<= 15'
     glow!
   end
-  
-  action_usable 'Howling Blast', requires: { auras: ['Rime'] } do
+  icon "Frostwyrm's Fury" do
+    action_usable! cooldown_remaining: '<= 15'
     glow!
   end
-  
-  action_usable 'Frost Strike', if_stacks: { 'Razorice' => '>= 5' }
-  action_usable 'Frost Strike'
-  action_usable 'Obliterate', if_stacks: { 'Killing Machine' => '1' }
-  action_usable 'Obliterate'
-  action_usable 'Empower Rune Weapon'
+  icon 'Breath of Sindragosa' do
+    action_usable! cooldown_remaining: '<= 15'
+  end
+  icon 'Soul Reaper' do
+    action_usable! cooldown_remaining: '<= 15'
+  end
+  icon 'Abomination Limb' do
+    action_usable! cooldown_remaining: '<= 15'
+  end
 end
 
-dynamic_group 'Frost DK AoE' do
+dynamic_group 'Defensive' do
+  scale 0.6
+  offset y: -100, x: -80
+  
+  action_usable 'Death Strike'
+  action_usable 'Anti-Magic Shell'
+  action_usable 'Vampiric Blood'
+  action_usable 'Icebound Fortitude'
+  action_usable 'Death Pact'
+end
+
+dynamic_group 'WhackAuras' do
+  scale 0.8
   offset y: -140
   
-  action_usable 'Frostscythe', if_stacks: { 'Killing Machine' => '>= 1' }
-  action_usable 'Glacial Advance'
-end
-
-dynamic_group 'Frost DK Cooldowns' do
-  offset y: -40
-  
-  action_usable 'Pillar of Frost' do
+  icon 'Empower Rune Weapon' do
+    action_usable!
+    power_check :charges, '>= 2'
     glow!
   end
-  action_usable "Reaper's Mark"
-  action_usable "Frostwyrm's Fury"
-  action_usable 'Breath of Sindragosa'
-  action_usable 'Abomination Limb'
+  
+  icon 'Obliterate' do
+    action_usable! spell: 'Obliterate'
+    aura 'Killing Machine', show_on: :active, type: 'buff', stacks: '>= 1'
+    glow!  # Simple glow when Killing Machine is active
+  end
+  
+  icon 'Howling Blast' do
+    action_usable! spell: 'Howling Blast'
+    aura 'Rime', show_on: :active, type: 'buff'
+    glow!
+  end
+  
+  icon 'Frostscythe' do
+    action_usable! spell: 'Frostscythe'
+    aura 'Killing Machine', show_on: :active, type: 'buff'
+    glow!
+  end
+  
+  icon 'Frost Strike' do
+    action_usable! spell: 'Frost Strike'
+    weakaura_inactive 'Obliterate'
+    all_triggers!
+  end
+  action_usable 'Glacial Advance'
+  action_usable 'Horn of Winter'
 end

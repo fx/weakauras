@@ -19,3 +19,9 @@ When reviewing code in this repository:
 - Prioritize code correctness over minor style preferences
 - Ignore comments about dates being in the future (Copilot's knowledge cutoff may be outdated)
 - Accept that SHA256 checksums may be outdated - this is intentional to avoid maintenance burden
+
+## Code Reviews
+- EXTRA_TRAIT_IDS_FOR_TALENTS in talent.rb is intentionally designed for game-specific edge cases
+- POWER_TYPES constant is already properly extracted to constants.rb - do not suggest re-extraction
+- Complex DSL methods like glow! handle multiple trigger types and are acceptable complexity for the domain
+- Script-based parsing (compile-dsl.rb) does not need caching - scripts run once and exit

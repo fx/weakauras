@@ -13,11 +13,11 @@ process.stdin.on("data", async (data) => {
       "inspect.lua",
       "encode.lua",
     ].map((file) =>
-      factory.mountFile(file, fs.readFileSync(`./src/lua/${file}`, "utf8"))
+      factory.mountFile(file, fs.readFileSync(`./public/lua/${file}`, "utf8"))
     )
   );
 
-  await lua.doString(fs.readFileSync("./src/lua/index.lua", "utf8"));
+  await lua.doString(fs.readFileSync("./public/lua/index.lua", "utf8"));
 
   const input = data.toString();
   const encode = lua.global.get("encode");

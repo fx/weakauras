@@ -42,7 +42,7 @@ module Trigger
       if rem
         data.deep_merge!({
                            trigger: {
-                             rem: options[:remaining_time].to_s,
+                             rem: rem.to_s,
                              remOperator: rem_operator,
                              useRem: true
                            }

@@ -10,12 +10,9 @@ hide_ooc!
 
 dynamic_group 'Frost Mage WhackAuras' do
   icon 'Ray of Frost' do
-    action_usable! do
-      aura 'Cryopathy' do
-        stacks '>= 2' do
-          glow!
-        end
-      end
+    action_usable!
+    aura 'Cryopathy', stacks: '>= 2' do
+      glow!
     end
   end
 
